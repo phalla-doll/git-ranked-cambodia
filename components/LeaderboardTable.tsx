@@ -11,8 +11,13 @@ interface LeaderboardTableProps {
 export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({ users, sortBy, loading }) => {
   if (loading && users.length === 0) {
     return (
-      <div className="bg-dark-surface rounded-2xl border border-dark-border p-16 flex flex-col items-center justify-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-10 w-10 border-2 border-neon-400 border-t-transparent mb-6"></div>
+      <div className="bg-dark-surface border border-dark-border p-16 flex flex-col items-center justify-center min-h-[400px] relative">
+        <div className="absolute top-0 left-0 w-3 h-3 border-l-2 border-t-2 border-dark-border"></div>
+        <div className="absolute top-0 right-0 w-3 h-3 border-r-2 border-t-2 border-dark-border"></div>
+        <div className="absolute bottom-0 left-0 w-3 h-3 border-l-2 border-b-2 border-dark-border"></div>
+        <div className="absolute bottom-0 right-0 w-3 h-3 border-r-2 border-b-2 border-dark-border"></div>
+        
+        <div className="animate-spin h-10 w-10 border-2 border-neon-400 border-t-transparent mb-6"></div>
         <p className="text-dark-heading font-medium">Synchronizing Data...</p>
       </div>
     );
@@ -20,8 +25,13 @@ export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({ users, sortB
 
   if (users.length === 0) {
     return (
-      <div className="bg-dark-surface rounded-2xl border border-dark-border p-16 text-center min-h-[400px] flex flex-col items-center justify-center">
-        <div className="w-16 h-16 bg-dark-bg rounded-full flex items-center justify-center mb-4 border border-dark-border">
+      <div className="bg-dark-surface border border-dark-border p-16 text-center min-h-[400px] flex flex-col items-center justify-center relative">
+        <div className="absolute top-0 left-0 w-3 h-3 border-l-2 border-t-2 border-dark-border"></div>
+        <div className="absolute top-0 right-0 w-3 h-3 border-r-2 border-t-2 border-dark-border"></div>
+        <div className="absolute bottom-0 left-0 w-3 h-3 border-l-2 border-b-2 border-dark-border"></div>
+        <div className="absolute bottom-0 right-0 w-3 h-3 border-r-2 border-b-2 border-dark-border"></div>
+
+        <div className="w-16 h-16 bg-dark-bg flex items-center justify-center mb-4 border border-dark-border">
             <Terminal size={32} className="text-dark-text" />
         </div>
         <h3 className="text-dark-heading font-semibold text-lg">No Results Found</h3>
@@ -38,7 +48,13 @@ export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({ users, sortB
   };
 
   return (
-    <div className="bg-dark-surface rounded-2xl border border-dark-border overflow-hidden flex flex-col shadow-xl shadow-black/20">
+    <div className="bg-dark-surface border border-dark-border overflow-hidden flex flex-col shadow-xl shadow-black/20 relative">
+      {/* Corner Chevrons for Table Container */}
+      <div className="absolute top-0 left-0 w-3 h-3 border-l-2 border-t-2 border-neon-500 z-10"></div>
+      <div className="absolute top-0 right-0 w-3 h-3 border-r-2 border-t-2 border-neon-500 z-10"></div>
+      <div className="absolute bottom-0 left-0 w-3 h-3 border-l-2 border-b-2 border-neon-500 z-10"></div>
+      <div className="absolute bottom-0 right-0 w-3 h-3 border-r-2 border-b-2 border-neon-500 z-10"></div>
+
       <div className="overflow-x-auto custom-scrollbar">
         <table className="w-full text-left border-collapse min-w-[700px]">
           <thead>
@@ -70,7 +86,7 @@ export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({ users, sortB
             {users.map((user, index) => (
               <tr key={user.id} className="hover:bg-dark-hover/50 transition-colors group">
                 <td className="py-4 px-6 text-center">
-                   <span className={`inline-flex items-center justify-center w-8 h-8 rounded-full text-xs font-bold border ${getRankStyle(index)}`}>
+                   <span className={`inline-flex items-center justify-center w-8 h-8 text-xs font-bold border ${getRankStyle(index)}`}>
                      {index + 1}
                    </span>
                 </td>
@@ -80,7 +96,7 @@ export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({ users, sortB
                       <img 
                         src={user.avatar_url} 
                         alt={user.login} 
-                        className="w-12 h-12 rounded-xl border border-dark-border shadow-sm bg-dark-bg object-cover"
+                        className="w-12 h-12 border border-dark-border shadow-sm bg-dark-bg object-cover"
                         loading="lazy"
                       />
                     </div>
@@ -90,7 +106,7 @@ export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({ users, sortB
                             {user.name || user.login}
                          </span>
                          {user.company && (
-                           <span className="hidden lg:inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-dark-bg border border-dark-border text-dark-text truncate max-w-[120px]">
+                           <span className="hidden lg:inline-flex items-center px-2 py-0.5 text-[10px] font-medium bg-dark-bg border border-dark-border text-dark-text truncate max-w-[120px]">
                              {user.company}
                            </span>
                          )}
@@ -122,7 +138,7 @@ export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({ users, sortB
                     href={user.html_url} 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-dark-bg border border-dark-border text-dark-text hover:text-white hover:bg-neon-500 hover:border-neon-500 transition-all focus:outline-none"
+                    className="inline-flex items-center justify-center w-8 h-8 bg-dark-bg border border-dark-border text-dark-text hover:text-white hover:bg-neon-500 hover:border-neon-500 transition-all focus:outline-none"
                     title="Access GitHub Profile"
                   >
                     <ExternalLink size={14} />
@@ -136,7 +152,7 @@ export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({ users, sortB
       {loading && users.length > 0 && (
           <div className="p-4 text-center text-dark-text text-xs bg-dark-surface border-t border-dark-border">
              <div className="flex items-center justify-center gap-2">
-               <div className="animate-spin rounded-full h-3 w-3 border-2 border-neon-400 border-t-transparent"></div>
+               <div className="animate-spin h-3 w-3 border-2 border-neon-400 border-t-transparent"></div>
                <span>Loading more...</span>
              </div>
           </div>

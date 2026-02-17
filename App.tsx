@@ -194,7 +194,7 @@ function App() {
               </div>
               <button 
                 onClick={() => setShowKeyInput(true)}
-                className="text-[10px] font-bold bg-red-500/20 hover:bg-red-500/30 text-red-100 px-3 py-1 rounded transition-colors"
+                className="text-[10px] font-bold bg-red-500/20 hover:bg-red-500/30 text-red-100 px-3 py-1 transition-colors"
               >
                 FIX NOW
               </button>
@@ -207,7 +207,7 @@ function App() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-18 items-center py-3">
             <div className="flex items-center gap-3">
-               <div className="w-10 h-10 bg-gradient-to-br from-neon-400 to-neon-500 rounded-xl flex items-center justify-center shadow-lg shadow-neon-500/20">
+               <div className="w-10 h-10 bg-gradient-to-br from-neon-400 to-neon-500 flex items-center justify-center shadow-lg shadow-neon-500/20">
                   <Terminal className="text-white h-5 w-5" />
                </div>
                <div className="flex flex-col">
@@ -222,7 +222,7 @@ function App() {
             
             <div className="flex items-center gap-3">
               {/* User Search Input */}
-              <div className="hidden md:flex items-center gap-2 bg-dark-surface border border-dark-border rounded-full px-4 py-2 focus-within:border-neon-500/50 focus-within:ring-1 focus-within:ring-neon-500/20 transition-all w-64">
+              <div className="hidden md:flex items-center gap-2 bg-dark-surface border border-dark-border px-4 py-2 focus-within:border-neon-500/50 focus-within:ring-1 focus-within:ring-neon-500/20 transition-all w-64">
                 <Search size={14} className="text-dark-text" />
                 <input 
                   type="text"
@@ -238,7 +238,7 @@ function App() {
 
               <button 
                 onClick={() => setShowKeyInput(!showKeyInput)}
-                className={`p-2 rounded-full border transition-all ${
+                className={`p-2 border transition-all ${
                   apiKey 
                   ? 'border-neon-500/30 text-neon-400 bg-neon-500/10' 
                   : 'border-dark-border text-dark-text hover:text-white hover:bg-dark-surface'
@@ -266,11 +266,11 @@ function App() {
                   placeholder="Paste ghp_... token here" 
                   value={apiKey}
                   onChange={(e) => setApiKey(e.target.value)}
-                  className="bg-dark-bg border border-dark-border rounded-lg px-4 py-2 text-sm w-full md:w-80 focus:outline-none focus:border-neon-500 text-white"
+                  className="bg-dark-bg border border-dark-border px-4 py-2 text-sm w-full md:w-80 focus:outline-none focus:border-neon-500 text-white"
                />
                <button 
                  onClick={handleSaveApiKey}
-                 className="bg-neon-500 hover:bg-neon-400 text-white px-6 py-2 rounded-lg text-sm font-semibold transition-colors"
+                 className="bg-neon-500 hover:bg-neon-400 text-white px-6 py-2 text-sm font-semibold transition-colors"
                >
                  Save
                </button>
@@ -292,7 +292,7 @@ function App() {
                   </div>
                   <input
                     type="text"
-                    className="block w-full pl-12 pr-4 py-3.5 bg-dark-surface border border-dark-border rounded-xl text-white placeholder-dark-text focus:outline-none focus:border-neon-500 focus:ring-1 focus:ring-neon-500/20 transition-all font-medium text-lg shadow-sm"
+                    className="block w-full pl-12 pr-4 py-3.5 bg-dark-surface border border-dark-border text-white placeholder-dark-text focus:outline-none focus:border-neon-500 focus:ring-1 focus:ring-neon-500/20 transition-all font-medium text-lg shadow-sm"
                     placeholder="Enter location..."
                     value={location}
                     onChange={handleLocationChange}
@@ -302,7 +302,7 @@ function App() {
                     autoComplete="off"
                   />
                   <div className="absolute inset-y-1.5 right-1.5">
-                    <button type="submit" className="h-full px-5 bg-neon-500 hover:bg-neon-400 text-white rounded-lg text-sm font-semibold transition-colors shadow-lg shadow-neon-500/20">
+                    <button type="submit" className="h-full px-5 bg-neon-500 hover:bg-neon-400 text-white text-sm font-semibold transition-colors shadow-lg shadow-neon-500/20">
                       Update
                     </button>
                   </div>
@@ -312,7 +312,7 @@ function App() {
                 {showSuggestions && suggestions.length > 0 && (
                   <ul 
                     ref={suggestionsRef}
-                    className="absolute top-full left-0 right-0 mt-2 bg-dark-surface border border-dark-border rounded-xl shadow-2xl z-50 max-h-60 overflow-y-auto custom-scrollbar"
+                    className="absolute top-full left-0 right-0 mt-2 bg-dark-surface border border-dark-border shadow-2xl z-50 max-h-60 overflow-y-auto custom-scrollbar"
                   >
                     {suggestions.map((suggestion, index) => (
                       <li 
@@ -328,7 +328,7 @@ function App() {
              </form>
           </div>
 
-          <div className="flex bg-dark-surface p-1 rounded-xl border border-dark-border overflow-x-auto">
+          <div className="flex bg-dark-surface p-1 border border-dark-border overflow-x-auto">
              {[
                { id: SortOption.FOLLOWERS, label: 'Followers' },
                { id: SortOption.CONTRIBUTIONS, label: 'Activity' },
@@ -338,7 +338,7 @@ function App() {
                 <button
                   key={option.id}
                   onClick={() => setSortBy(option.id)}
-                  className={`px-4 py-2 rounded-lg text-xs font-medium transition-all whitespace-nowrap ${
+                  className={`px-4 py-2 text-xs font-medium transition-all whitespace-nowrap ${
                     sortBy === option.id 
                       ? 'bg-neon-500 text-white shadow-md' 
                       : 'text-dark-text hover:text-white hover:bg-dark-bg'
@@ -381,8 +381,8 @@ function App() {
                   <LayoutDashboard className="text-neon-400" size={18} />
                   Market Leaders
                 </h2>
-                <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-neon-500/10 border border-neon-500/20">
-                   <div className="w-1.5 h-1.5 rounded-full bg-neon-500 animate-pulse"></div>
+                <div className="flex items-center gap-2 px-3 py-1 bg-neon-500/10 border border-neon-500/20">
+                   <div className="w-1.5 h-1.5 bg-neon-500 animate-pulse"></div>
                    <span className="text-[10px] font-bold text-neon-400 uppercase tracking-wide">Live Data</span>
                 </div>
              </div>
@@ -391,7 +391,13 @@ function App() {
 
           {/* Sidebar / Charts */}
           <div className="space-y-6">
-            <div className="bg-dark-surface rounded-2xl border border-dark-border p-6 shadow-xl">
+            <div className="bg-dark-surface border border-dark-border p-6 shadow-xl relative">
+              {/* Chart Corner Chevrons */}
+              <div className="absolute top-0 left-0 w-2 h-2 border-l-2 border-t-2 border-dark-text/30"></div>
+              <div className="absolute top-0 right-0 w-2 h-2 border-r-2 border-t-2 border-dark-text/30"></div>
+              <div className="absolute bottom-0 left-0 w-2 h-2 border-l-2 border-b-2 border-dark-text/30"></div>
+              <div className="absolute bottom-0 right-0 w-2 h-2 border-r-2 border-b-2 border-dark-text/30"></div>
+
               <h3 className="text-sm font-semibold text-white mb-6 flex items-center justify-between">
                 <span>Distribution</span>
                 <span className="text-xs text-dark-text font-normal">Top 7</span>
@@ -412,7 +418,7 @@ function App() {
                     <Tooltip 
                       cursor={{fill: '#21262d', opacity: 0.4}}
                       contentStyle={{ 
-                        borderRadius: '8px', 
+                        borderRadius: '0px', 
                         border: '1px solid #30363d', 
                         backgroundColor: '#161b22',
                         color: '#f0f6fc',
@@ -421,7 +427,7 @@ function App() {
                     />
                     <Bar 
                       dataKey="followers" 
-                      radius={[0, 4, 4, 0]} 
+                      radius={[0, 0, 0, 0]} 
                       barSize={20}
                     >
                       {chartData.map((entry, index) => (
@@ -433,7 +439,13 @@ function App() {
               </div>
             </div>
 
-            <div className="rounded-2xl border border-dark-border p-6 relative overflow-hidden group bg-gradient-to-br from-dark-surface to-dark-bg">
+            <div className="border border-dark-border p-6 relative overflow-hidden group bg-gradient-to-br from-dark-surface to-dark-bg">
+               {/* Intel Card Corner Chevrons */}
+               <div className="absolute top-0 left-0 w-3 h-3 border-l-2 border-t-2 border-neon-500"></div>
+               <div className="absolute top-0 right-0 w-3 h-3 border-r-2 border-t-2 border-neon-500"></div>
+               <div className="absolute bottom-0 left-0 w-3 h-3 border-l-2 border-b-2 border-neon-500"></div>
+               <div className="absolute bottom-0 right-0 w-3 h-3 border-r-2 border-b-2 border-neon-500"></div>
+
                <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
                  <Cpu size={120} />
                </div>
@@ -441,7 +453,7 @@ function App() {
                <p className="text-dark-text text-xs leading-relaxed relative z-10 mb-4">
                  Our ranking algorithm prioritizes community engagement (Followers) and public output (Repositories) as key signals of developer influence.
                </p>
-               <div className="inline-flex items-center gap-2 text-[10px] font-bold text-neon-400 bg-neon-500/10 px-3 py-1.5 rounded-lg border border-neon-500/20">
+               <div className="inline-flex items-center gap-2 text-[10px] font-bold text-neon-400 bg-neon-500/10 px-3 py-1.5 border border-neon-500/20">
                   <Activity size={12} />
                   <span>ALGORITHM V2.1 ACTIVE</span>
                </div>
