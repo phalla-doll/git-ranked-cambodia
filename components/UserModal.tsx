@@ -78,26 +78,26 @@ export const UserModal: React.FC<UserModalProps> = ({ user, isOpen, onClose }) =
 
               <div className="grid grid-cols-5 gap-0 mb-8 bg-gray-50 rounded-xl p-4 divide-x divide-gray-200">
                 <div className="text-center px-1">
-                  <div className="text-lg font-medium text-apple-text">{user.public_repos}</div>
+                  <div className="text-lg font-medium text-apple-text">{user.public_repos.toLocaleString()}</div>
                   <div className="text-[10px] text-gray-400 uppercase font-medium mt-1">Repos</div>
                 </div>
                 <div className="text-center px-1">
-                  <div className="text-lg font-medium text-apple-text">{user.followers}</div>
+                  <div className="text-lg font-medium text-apple-text">{user.followers.toLocaleString()}</div>
                   <div className="text-[10px] text-gray-400 uppercase font-medium mt-1">Followers</div>
                 </div>
                 <div className="text-center px-1">
-                  <div className="text-lg font-medium text-apple-text">{user.following}</div>
+                  <div className="text-lg font-medium text-apple-text">{user.following.toLocaleString()}</div>
                   <div className="text-[10px] text-gray-400 uppercase font-medium mt-1">Following</div>
                 </div>
                 <div className="text-center px-1">
                   <div className="text-lg font-medium text-apple-text">
-                      {user.total_stars !== undefined ? user.total_stars : '-'}
+                      {user.total_stars !== undefined ? user.total_stars.toLocaleString() : '-'}
                   </div>
                   <div className="text-[10px] text-gray-400 uppercase font-medium mt-1">Stars</div>
                 </div>
                 <div className="text-center px-1">
                   <div className="text-lg font-medium text-apple-blue">
-                      {user.recent_activity_count !== undefined ? user.recent_activity_count : '-'}
+                      {user.recent_activity_count !== undefined ? user.recent_activity_count.toLocaleString() : '-'}
                   </div>
                   <div className="text-[10px] text-gray-400 uppercase font-medium mt-1">Contribs</div>
                 </div>
