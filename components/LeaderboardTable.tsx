@@ -8,6 +8,7 @@ interface LeaderboardTableProps {
   loading: boolean;
   error?: string | null;
   page: number;
+  onUserClick: (user: GitHubUserDetail) => void;
 }
 
 const RankBadge = ({ rank }: { rank: number }) => {
@@ -32,7 +33,7 @@ const RankBadge = ({ rank }: { rank: number }) => {
   );
 };
 
-export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({ users, sortBy, loading, error, page }) => {
+export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({ users, sortBy, loading, error, page, onUserClick }) => {
   
   // Loading State
   if (loading && users.length === 0) {
@@ -100,7 +101,8 @@ export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({ users, sortB
               return (
                 <tr 
                   key={user.id} 
-                  className="group hover:bg-blue-50/30 transition-colors duration-200"
+                  onClick={() => onUserClick(user)}
+                  className="group hover:bg-blue-50/30 transition-colors duration-200 cursor-pointer"
                 >
                   <td className="px-6 py-4 text-center">
                     <RankBadge rank={currentRank} />
@@ -127,6 +129,7 @@ export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({ users, sortB
                                href={user.html_url} 
                                target="_blank" 
                                rel="noopener noreferrer"
+                               onClick={(e) => e.stopPropagation()}
                                className="text-xs text-gray-400 hover:text-gray-600 transition-colors truncate"
                             >
                                 @{user.login}
@@ -173,6 +176,7 @@ export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({ users, sortB
                         href={user.html_url} 
                         target="_blank" 
                         rel="noopener noreferrer" 
+                        onClick={(e) => e.stopPropagation()}
                         className="inline-flex p-2 text-gray-300 hover:text-apple-blue hover:bg-blue-50 rounded-full transition-colors opacity-0 group-hover:opacity-100"
                      >
                          <ExternalLink size={16} />

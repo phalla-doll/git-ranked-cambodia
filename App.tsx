@@ -418,6 +418,10 @@ function App() {
               loading={loading} 
               error={error} 
               page={page}
+              onUserClick={(user) => {
+                setModalUser(user);
+                setIsModalOpen(true);
+              }}
             />
             
             {/* Minimal Pagination Controls */}
