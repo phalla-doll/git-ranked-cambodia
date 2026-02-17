@@ -398,34 +398,31 @@ function App() {
               page={page}
             />
             
-            {/* Pagination Controls */}
+            {/* Minimal Pagination Controls */}
             {users.length > 0 && (
-              <div className="flex justify-between items-center bg-white p-4 rounded-2xl shadow-soft border border-gray-100">
-                  <div className="text-sm text-gray-500 font-medium">
-                     Page {page}
-                  </div>
-                  <div className="flex gap-2">
-                     <button
-                        onClick={() => setPage(p => Math.max(1, p - 1))}
-                        disabled={page === 1 || loading}
-                        className="p-2 rounded-lg border border-gray-200 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-gray-600"
-                     >
-                        <ChevronLeft size={20} />
-                     </button>
-                     <button
-                        onClick={() => setPage(p => p + 1)}
-                        // Disable if we have fewer items than page size, implying end of list
-                        disabled={users.length < 25 || loading}
-                        className="p-2 rounded-lg border border-gray-200 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-gray-600"
-                     >
-                        <ChevronRight size={20} />
-                     </button>
-                  </div>
+              <div className="flex justify-center items-center gap-6 mt-8">
+                 <button
+                    onClick={() => setPage(p => Math.max(1, p - 1))}
+                    disabled={page === 1 || loading}
+                    className="p-2 text-gray-400 hover:text-apple-text disabled:opacity-30 disabled:hover:text-gray-400 transition-colors"
+                 >
+                    <ChevronLeft size={24} />
+                 </button>
+                 <span className="text-sm font-medium text-gray-500 tabular-nums">
+                   Page {page}
+                 </span>
+                 <button
+                    onClick={() => setPage(p => p + 1)}
+                    disabled={users.length < 25 || loading}
+                    className="p-2 text-gray-400 hover:text-apple-text disabled:opacity-30 disabled:hover:text-gray-400 transition-colors"
+                 >
+                    <ChevronRight size={24} />
+                 </button>
               </div>
             )}
             
             {/* Self-check prompt */}
-            <div className="bg-blue-50 rounded-2xl p-6 flex items-center justify-between border border-blue-100">
+            <div className="bg-blue-50 rounded-2xl p-6 flex items-center justify-between border border-blue-100 mt-6">
               <div>
                 <h4 className="font-medium text-apple-blue mb-1">Are you a developer in {location}?</h4>
                 <p className="text-sm text-blue-800/70 max-w-sm">
