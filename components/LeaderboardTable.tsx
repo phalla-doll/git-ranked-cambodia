@@ -95,27 +95,27 @@ export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({ users, sortB
     );
   }
 
-  // 2-Column Grid Layout (Responsive)
+  // 1-Column List Layout
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-4 relative min-h-[500px]">
+    <div className="flex flex-col gap-3 relative min-h-[500px]">
       {users.map((user, index) => (
         <div 
           key={user.id} 
-          className="group relative bg-dark-surface border border-dark-border hover:border-dark-text/30 transition-all shadow-sm hover:shadow-lg hover:shadow-black/20 overflow-hidden flex flex-col h-full"
+          className="group relative bg-dark-surface border border-dark-border hover:border-dark-text/30 transition-all shadow-sm hover:shadow-lg hover:shadow-black/20 overflow-hidden flex flex-col"
         >
              {/* Hover Glow */}
              <div className="absolute inset-0 bg-gradient-to-br from-neon-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
 
              {/* Top Section */}
-             <div className="p-5 flex-1 relative z-10">
-                <div className="flex justify-between items-start mb-4">
-                    <div className="flex items-start gap-3">
+             <div className="p-4 sm:p-5 flex-1 relative z-10">
+                <div className="flex justify-between items-start mb-3 sm:mb-4">
+                    <div className="flex items-start gap-3 sm:gap-4">
                         {/* Avatar */}
                         <div className="relative shrink-0">
                            <img 
                               src={user.avatar_url} 
                               alt={user.login} 
-                              className="w-12 h-12 rounded-sm border border-dark-border bg-dark-bg object-cover shadow-sm group-hover:border-neon-500/50 transition-colors"
+                              className="w-12 h-12 sm:w-14 sm:h-14 rounded-sm border border-dark-border bg-dark-bg object-cover shadow-sm group-hover:border-neon-500/50 transition-colors"
                               loading="lazy"
                            />
                            {index < 3 && (
@@ -124,20 +124,30 @@ export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({ users, sortB
                         </div>
                         
                         {/* Name Block */}
-                        <div className="min-w-0">
+                        <div className="min-w-0 flex flex-col justify-center pt-0.5">
                             <div className="flex items-center gap-2 mb-0.5">
-                                <h3 className="font-bold text-white text-base truncate max-w-[120px] sm:max-w-[150px] group-hover:text-neon-400 transition-colors">
+                                <h3 className="font-bold text-white text-base sm:text-lg truncate max-w-[150px] sm:max-w-[300px] group-hover:text-neon-400 transition-colors">
                                     {user.name || user.login}
                                 </h3>
                             </div>
-                            <a 
-                               href={user.html_url} 
-                               target="_blank" 
-                               rel="noopener noreferrer"
-                               className="text-xs text-dark-text hover:text-white font-mono flex items-center gap-1"
-                            >
-                                @{user.login}
-                            </a>
+                            <div className="flex items-center gap-3">
+                              <a 
+                                 href={user.html_url} 
+                                 target="_blank" 
+                                 rel="noopener noreferrer"
+                                 className="text-xs text-dark-text hover:text-white font-mono flex items-center gap-1"
+                              >
+                                  @{user.login}
+                              </a>
+                              
+                              {/* Location / Company - Inline for 1-column layout to save vertical space */}
+                              {(user.location || user.company) && (
+                                 <div className="hidden sm:flex items-center gap-2 text-[10px] text-dark-text/50">
+                                    <span className="w-1 h-1 rounded-full bg-dark-border"></span>
+                                    <span className="truncate max-w-[200px]">{user.company || user.location}</span>
+                                 </div>
+                              )}
+                            </div>
                         </div>
                     </div>
 
@@ -145,31 +155,11 @@ export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({ users, sortB
                 </div>
 
                 {/* Bio */}
-                <div className="mb-4 h-8">
-                    {user.bio ? (
-                        <p className="text-xs text-dark-text/70 line-clamp-2 leading-relaxed">
-                            {user.bio}
-                        </p>
-                    ) : (
-                        <p className="text-xs text-dark-text/30 italic">No bio available</p>
-                    )}
-                </div>
-
-                {/* Tags */}
-                <div className="flex flex-wrap gap-2 text-[10px] text-dark-text/60 font-medium">
-                   {user.location && (
-                     <div className="flex items-center gap-1 bg-dark-bg/50 px-2 py-1 rounded border border-dark-border/50">
-                       <MapPin size={10} />
-                       <span className="truncate max-w-[100px]">{user.location}</span>
-                     </div>
-                   )}
-                   {user.company && (
-                     <div className="flex items-center gap-1 bg-dark-bg/50 px-2 py-1 rounded border border-dark-border/50">
-                       <Building size={10} />
-                       <span className="truncate max-w-[100px]">{user.company}</span>
-                     </div>
-                   )}
-                </div>
+                {user.bio && (
+                  <div className="mb-3 sm:mb-0 text-sm text-dark-text/70 line-clamp-2 leading-relaxed max-w-2xl">
+                      {user.bio}
+                  </div>
+                )}
              </div>
 
              {/* Bottom Stats Section */}
@@ -177,7 +167,7 @@ export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({ users, sortB
                 <UserProfileStats user={user} sortBy={sortBy} flat={true} />
              </div>
              
-             {/* Action Button (Hidden but accessible via whole card click or specific link) */}
+             {/* Action Button */}
              <a 
                 href={user.html_url} 
                 target="_blank" 
@@ -190,7 +180,7 @@ export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({ users, sortB
       ))}
 
       {loading && users.length > 0 && (
-          <div className="col-span-full p-4 text-center text-dark-text text-xs bg-dark-surface border border-dark-border">
+          <div className="p-4 text-center text-dark-text text-xs bg-dark-surface border border-dark-border">
              <div className="flex items-center justify-center gap-2">
                <div className="animate-spin h-3 w-3 border-2 border-neon-400 border-t-transparent"></div>
                <span>Loading more developers...</span>
