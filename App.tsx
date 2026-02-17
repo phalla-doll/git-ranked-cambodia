@@ -366,7 +366,12 @@ function App() {
         {/* Controls Section - Search Only */}
         <div className="flex flex-col md:flex-row gap-8 justify-between items-end">
           <div className="w-full md:max-w-lg">
-             <h1 className="text-3xl font-medium tracking-tight mb-6">Developer Rankings</h1>
+             <h1 className="text-3xl sm:text-4xl font-medium tracking-tight text-apple-text mb-3">
+               Cambodia’s GitHub Leaderboard
+             </h1>
+             <p className="text-lg text-gray-500 mb-8 leading-relaxed">
+               Find top creators in your local dev community.
+             </p>
              <form onSubmit={handleSearch} className="relative group" ref={inputWrapperRef}>
                 <div className="relative shadow-soft rounded-2xl">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
