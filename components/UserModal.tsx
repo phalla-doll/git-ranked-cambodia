@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, MapPin, Link as LinkIcon, Building, Github } from 'lucide-react';
+import { X, MapPin, Link as LinkIcon, Building, Github, Activity } from 'lucide-react';
 import { GitHubUserDetail } from '../types';
 
 interface UserModalProps {
@@ -56,18 +56,24 @@ export const UserModal: React.FC<UserModalProps> = ({ user, isOpen, onClose }) =
             </p>
           )}
 
-          <div className="grid grid-cols-3 gap-4 mb-6 border-y border-slate-100 py-4">
+          <div className="grid grid-cols-4 gap-2 mb-6 border-y border-slate-100 py-4">
             <div className="text-center">
               <div className="text-xl font-bold text-slate-900 font-mono">{user.public_repos}</div>
-              <div className="text-xs text-slate-500 uppercase tracking-wide font-medium">Repos</div>
+              <div className="text-[10px] text-slate-500 uppercase tracking-wide font-medium">Repos</div>
             </div>
             <div className="text-center border-l border-slate-100">
               <div className="text-xl font-bold text-slate-900 font-mono">{user.followers}</div>
-              <div className="text-xs text-slate-500 uppercase tracking-wide font-medium">Followers</div>
+              <div className="text-[10px] text-slate-500 uppercase tracking-wide font-medium">Followers</div>
             </div>
             <div className="text-center border-l border-slate-100">
               <div className="text-xl font-bold text-slate-900 font-mono">{user.following}</div>
-              <div className="text-xs text-slate-500 uppercase tracking-wide font-medium">Following</div>
+              <div className="text-[10px] text-slate-500 uppercase tracking-wide font-medium">Following</div>
+            </div>
+            <div className="text-center border-l border-slate-100">
+              <div className="text-xl font-bold text-indigo-600 font-mono">
+                  {user.recent_activity_count !== undefined ? user.recent_activity_count : '-'}
+              </div>
+              <div className="text-[10px] text-slate-500 uppercase tracking-wide font-medium">Activity</div>
             </div>
           </div>
 
@@ -92,6 +98,10 @@ export const UserModal: React.FC<UserModalProps> = ({ user, isOpen, onClose }) =
                 </a>
               </div>
             )}
+            <div className="flex items-center gap-3">
+                 <Activity size={16} className="text-slate-400" />
+                 <span className="text-xs text-slate-500">Activity count based on last 90 days public events</span>
+            </div>
           </div>
         </div>
       </div>

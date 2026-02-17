@@ -1,6 +1,6 @@
 import React from 'react';
 import { GitHubUserDetail, SortOption } from '../types';
-import { Users, BookOpen, Star, MapPin, ExternalLink } from 'lucide-react';
+import { Users, BookOpen, Star, MapPin, ExternalLink, Activity } from 'lucide-react';
 
 interface LeaderboardTableProps {
   users: GitHubUserDetail[];
@@ -43,17 +43,17 @@ export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({ users, sortB
               <th className="py-4 px-6 text-xs font-semibold text-slate-500 uppercase tracking-wider">Developer</th>
               <th className="py-4 px-6 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">
                 <div className="flex items-center justify-end gap-1">
-                   <Users size={14} /> Followers
+                   <Activity size={14} className={sortBy === SortOption.CONTRIBUTIONS ? "text-indigo-600" : ""} /> Est. Activity
                 </div>
               </th>
               <th className="py-4 px-6 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">
                 <div className="flex items-center justify-end gap-1">
-                   <BookOpen size={14} /> Repos
+                   <Users size={14} /> Followers
                 </div>
               </th>
-               <th className="py-4 px-6 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right hidden md:table-cell">
+              <th className="py-4 px-6 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right hidden sm:table-cell">
                 <div className="flex items-center justify-end gap-1">
-                   <Star size={14} /> Gists
+                   <BookOpen size={14} /> Repos
                 </div>
               </th>
               <th className="py-4 px-6 text-xs font-semibold text-slate-500 uppercase tracking-wider text-center">Action</th>
@@ -89,18 +89,21 @@ export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({ users, sortB
                   </div>
                 </td>
                 <td className="py-4 px-6 text-right">
+                   <div className="flex flex-col items-end">
+                      <span className={`font-mono font-medium ${sortBy === SortOption.CONTRIBUTIONS ? 'text-indigo-600 font-bold text-lg' : 'text-slate-600'}`}>
+                        {user.recent_activity_count !== undefined ? user.recent_activity_count : '-'}
+                      </span>
+                      <span className="text-[10px] text-slate-400">recent events</span>
+                   </div>
+                </td>
+                <td className="py-4 px-6 text-right">
                   <span className={`font-mono font-medium ${sortBy === SortOption.FOLLOWERS ? 'text-indigo-600 font-bold text-lg' : 'text-slate-600'}`}>
                     {user.followers.toLocaleString()}
                   </span>
                 </td>
-                <td className="py-4 px-6 text-right">
+                <td className="py-4 px-6 text-right hidden sm:table-cell">
                   <span className={`font-mono font-medium ${sortBy === SortOption.REPOS ? 'text-indigo-600 font-bold text-lg' : 'text-slate-600'}`}>
                     {user.public_repos.toLocaleString()}
-                  </span>
-                </td>
-                 <td className="py-4 px-6 text-right hidden md:table-cell">
-                  <span className="font-mono text-slate-600 font-medium">
-                    {user.public_gists.toLocaleString()}
                   </span>
                 </td>
                 <td className="py-4 px-6 text-center">

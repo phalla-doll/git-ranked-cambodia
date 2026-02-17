@@ -9,7 +9,8 @@ import {
   AlertCircle,
   Key,
   Loader2,
-  ExternalLink
+  ExternalLink,
+  Activity
 } from 'lucide-react';
 import { 
   BarChart, 
@@ -241,10 +242,10 @@ function App() {
             </div>
 
             {/* Filter Tabs */}
-            <div className="flex bg-slate-100 p-1 rounded-xl self-start lg:self-end">
+            <div className="flex bg-slate-100 p-1 rounded-xl self-start lg:self-end overflow-x-auto">
               <button
                 onClick={() => setSortBy(SortOption.FOLLOWERS)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
                   sortBy === SortOption.FOLLOWERS 
                     ? 'bg-white text-indigo-600 shadow-sm' 
                     : 'text-slate-500 hover:text-slate-700'
@@ -253,18 +254,29 @@ function App() {
                 Most Followed
               </button>
               <button
+                onClick={() => setSortBy(SortOption.CONTRIBUTIONS)}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap flex items-center gap-1.5 ${
+                  sortBy === SortOption.CONTRIBUTIONS 
+                    ? 'bg-white text-indigo-600 shadow-sm' 
+                    : 'text-slate-500 hover:text-slate-700'
+                }`}
+              >
+                <Activity size={14} className={sortBy === SortOption.CONTRIBUTIONS ? 'text-indigo-500' : 'text-slate-400'} />
+                Most Contributions
+              </button>
+              <button
                 onClick={() => setSortBy(SortOption.REPOS)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
                   sortBy === SortOption.REPOS 
                     ? 'bg-white text-indigo-600 shadow-sm' 
                     : 'text-slate-500 hover:text-slate-700'
                 }`}
               >
-                Most Active
+                Most Public Repos
               </button>
                <button
                 onClick={() => setSortBy(SortOption.JOINED)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
                   sortBy === SortOption.JOINED 
                     ? 'bg-white text-indigo-600 shadow-sm' 
                     : 'text-slate-500 hover:text-slate-700'

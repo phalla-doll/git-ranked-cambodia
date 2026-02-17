@@ -22,6 +22,7 @@ export interface GitHubUserDetail {
   followers: number;
   following: number;
   created_at: string;
+  recent_activity_count?: number; // Estimated from public events
 }
 
 export interface SearchResponse {
@@ -33,7 +34,8 @@ export interface SearchResponse {
 export enum SortOption {
   FOLLOWERS = 'followers',
   REPOS = 'repositories',
-  JOINED = 'joined'
+  JOINED = 'joined',
+  CONTRIBUTIONS = 'contributions' // Custom sort based on events
 }
 
 export interface AppState {
