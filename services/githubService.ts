@@ -21,7 +21,8 @@ const BASE_MOCK_USERS: GitHubUserDetail[] = [
     followers: 1205,
     following: 110,
     created_at: "2018-01-15T10:20:30Z",
-    recent_activity_count: 890
+    recent_activity_count: 890,
+    total_stars: 450
   },
   {
     login: "sopheak-dev",
@@ -39,7 +40,8 @@ const BASE_MOCK_USERS: GitHubUserDetail[] = [
     followers: 890,
     following: 45,
     created_at: "2019-05-10T08:00:00Z",
-    recent_activity_count: 2400
+    recent_activity_count: 2400,
+    total_stars: 120
   },
   {
     login: "vireak-codes",
@@ -57,7 +59,8 @@ const BASE_MOCK_USERS: GitHubUserDetail[] = [
     followers: 650,
     following: 300,
     created_at: "2020-03-22T14:15:00Z",
-    recent_activity_count: 420
+    recent_activity_count: 420,
+    total_stars: 85
   },
   {
     login: "dara-js",
@@ -75,7 +78,8 @@ const BASE_MOCK_USERS: GitHubUserDetail[] = [
     followers: 430,
     following: 12,
     created_at: "2016-11-02T09:30:00Z",
-    recent_activity_count: 1500
+    recent_activity_count: 1500,
+    total_stars: 310
   },
   {
     login: "bopha-design",
@@ -93,7 +97,8 @@ const BASE_MOCK_USERS: GitHubUserDetail[] = [
     followers: 340,
     following: 80,
     created_at: "2021-01-05T11:00:00Z",
-    recent_activity_count: 350
+    recent_activity_count: 350,
+    total_stars: 65
   }
 ];
 
@@ -118,6 +123,7 @@ const generateMockUsers = (count: number): GitHubUserDetail[] => {
         followers: Math.floor(template.followers * (0.1 + Math.random() * 0.8)),
         public_repos: Math.floor(template.public_repos * (0.2 + Math.random() * 1.5)),
         recent_activity_count: Math.floor((template.recent_activity_count || 0) * (0.2 + Math.random() * 2.5)),
+        total_stars: Math.floor(Math.random() * 500),
         company: companies[Math.floor(Math.random() * companies.length)],
         location: locations[Math.floor(Math.random() * locations.length)],
         avatar_url: `https://picsum.photos/200/200?random=${i + 10}`,
@@ -179,11 +185,16 @@ const fetchGraphQLUserDetails = async (usernames: string[], token: string): Prom
           createdAt
           followers { totalCount }
           following { totalCount }
-          repositories(privacy: PUBLIC) { totalCount }
           gists(privacy: PUBLIC) { totalCount }
           contributionsCollection {
             contributionCalendar {
               totalContributions
+            }
+          }
+          repositories(first: 30, isFork: false, ownerAffiliations: OWNER, orderBy: {field: STARGAZERS, direction: DESC}) {
+            totalCount
+            nodes {
+              stargazerCount
             }
           }
         }
@@ -209,6 +220,8 @@ const fetchGraphQLUserDetails = async (usernames: string[], token: string): Prom
            const safeKey = `user_${index}`;
            const data = result.data[safeKey];
            if (data) {
+             const totalStars = data.repositories?.nodes?.reduce((acc: number, repo: any) => acc + (repo.stargazerCount || 0), 0) || 0;
+             
              allUsers[username.toLowerCase()] = {
                login: data.login,
                id: data.databaseId,
@@ -225,7 +238,8 @@ const fetchGraphQLUserDetails = async (usernames: string[], token: string): Prom
                followers: data.followers?.totalCount || 0,
                following: data.following?.totalCount || 0,
                created_at: data.createdAt,
-               recent_activity_count: data.contributionsCollection?.contributionCalendar?.totalContributions || 0
+               recent_activity_count: data.contributionsCollection?.contributionCalendar?.totalContributions || 0,
+               total_stars: totalStars
              };
            }
         });
@@ -268,7 +282,6 @@ export const getUserByName = async (username: string, apiKey?: string): Promise<
     const user = await response.json() as GitHubUserDetail;
     
     // Fetch activity Proxy via REST Events (Inaccurate but works without token)
-    // For single user, this is acceptable
     try {
        const eventsRes = await fetch(`${BASE_URL}/users/${username}/events?per_page=100`, { headers });
        if (eventsRes.ok) {
@@ -277,6 +290,20 @@ export const getUserByName = async (username: string, apiKey?: string): Promise<
        }
     } catch (e) {
        user.recent_activity_count = 0;
+    }
+
+    // Try to fetch total stars for single user (REST fallback)
+    try {
+       // Limit to top 100 repos to save bandwidth
+       const reposRes = await fetch(`${BASE_URL}/users/${username}/repos?per_page=100&type=owner&sort=pushed`, { headers });
+       if (reposRes.ok) {
+         const repos = await reposRes.json();
+         if (Array.isArray(repos)) {
+            user.total_stars = repos.reduce((acc: number, repo: any) => acc + (repo.stargazers_count || 0), 0);
+         }
+       }
+    } catch (e) {
+      // Ignore star fetch errors
     }
 
     return user;

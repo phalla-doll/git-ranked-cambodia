@@ -23,6 +23,7 @@ export interface GitHubUserDetail {
   following: number;
   created_at: string;
   recent_activity_count?: number; // Total commits from recent public PushEvents
+  total_stars?: number;
 }
 
 export interface SearchResponse {

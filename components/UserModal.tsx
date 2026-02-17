@@ -14,7 +14,7 @@ export const UserModal: React.FC<UserModalProps> = ({ user, isOpen, onClose }) =
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/20 backdrop-blur-sm animate-in fade-in duration-200">
       <div 
-        className="bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden animate-in zoom-in-95 duration-200 scale-100"
+        className="bg-white rounded-3xl shadow-2xl max-w-lg w-full overflow-hidden animate-in zoom-in-95 duration-200 scale-100"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header/Banner area */}
@@ -58,20 +58,26 @@ export const UserModal: React.FC<UserModalProps> = ({ user, isOpen, onClose }) =
             </p>
           )}
 
-          <div className="grid grid-cols-4 gap-2 mb-8 bg-gray-50 rounded-xl p-4">
-            <div className="text-center">
+          <div className="grid grid-cols-5 gap-0 mb-8 bg-gray-50 rounded-xl p-4 divide-x divide-gray-200">
+            <div className="text-center px-1">
               <div className="text-lg font-medium text-apple-text">{user.public_repos}</div>
               <div className="text-[10px] text-gray-400 uppercase font-medium mt-1">Repos</div>
             </div>
-            <div className="text-center border-l border-gray-200">
+            <div className="text-center px-1">
               <div className="text-lg font-medium text-apple-text">{user.followers}</div>
               <div className="text-[10px] text-gray-400 uppercase font-medium mt-1">Followers</div>
             </div>
-            <div className="text-center border-l border-gray-200">
+            <div className="text-center px-1">
               <div className="text-lg font-medium text-apple-text">{user.following}</div>
               <div className="text-[10px] text-gray-400 uppercase font-medium mt-1">Following</div>
             </div>
-            <div className="text-center border-l border-gray-200">
+            <div className="text-center px-1">
+              <div className="text-lg font-medium text-apple-text">
+                  {user.total_stars !== undefined ? user.total_stars : '-'}
+              </div>
+              <div className="text-[10px] text-gray-400 uppercase font-medium mt-1">Stars</div>
+            </div>
+            <div className="text-center px-1">
               <div className="text-lg font-medium text-apple-blue">
                   {user.recent_activity_count !== undefined ? user.recent_activity_count : '-'}
               </div>

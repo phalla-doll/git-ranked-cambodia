@@ -1,5 +1,5 @@
 import React from 'react';
-import { Users, BookOpen, UserPlus, Calendar } from 'lucide-react';
+import { Users, BookOpen, UserPlus, Calendar, Star } from 'lucide-react';
 import { GitHubUserDetail, SortOption } from '../types';
 
 interface UserProfileStatsProps {
@@ -27,6 +27,7 @@ const StatBox = ({
     </span>
     
     <div className="flex items-center gap-1.5 mt-1.5">
+      {Icon && <Icon size={12} className={highlight ? 'text-apple-blue' : 'text-gray-400'} />}
       <span className={`text-[10px] uppercase font-medium tracking-wide ${highlight ? 'text-apple-blue' : 'text-apple-gray'}`}>
         {label}
       </span>
@@ -36,7 +37,7 @@ const StatBox = ({
 
 export const UserProfileStats: React.FC<UserProfileStatsProps> = ({ user, sortBy, className = '', flat = false }) => {
   return (
-    <div className={`grid grid-cols-4 divide-x divide-gray-100 ${flat ? '' : 'bg-gray-50 rounded-xl border border-gray-100'} overflow-hidden h-full ${className}`}>
+    <div className={`grid grid-cols-5 divide-x divide-gray-100 ${flat ? '' : 'bg-gray-50 rounded-xl border border-gray-100'} overflow-hidden h-full ${className}`}>
       <StatBox 
         label="Repos" 
         value={user.public_repos} 
@@ -53,6 +54,11 @@ export const UserProfileStats: React.FC<UserProfileStatsProps> = ({ user, sortBy
         label="Following" 
         value={user.following} 
         icon={UserPlus}
+      />
+      <StatBox 
+        label="Stars" 
+        value={user.total_stars !== undefined ? user.total_stars : '-'} 
+        icon={Star}
       />
       <StatBox 
         label="Contribs" 
