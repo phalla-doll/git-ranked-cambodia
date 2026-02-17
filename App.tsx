@@ -173,6 +173,16 @@ function App() {
     fetchUsers();
   };
 
+  const getListTitle = () => {
+    switch (sortBy) {
+      case SortOption.FOLLOWERS: return "Top Profiles by Followers";
+      case SortOption.REPOS: return "Top Profiles by Repositories";
+      case SortOption.CONTRIBUTIONS: return "Top Profiles by Contributions";
+      case SortOption.JOINED: return "Newest Members";
+      default: return "Top Profiles";
+    }
+  };
+
   // Stats for the top cards
   const topUser = users.length > 0 ? users[0] : null;
   const totalFollowers = users.reduce((acc, user) => acc + user.followers, 0);
@@ -378,7 +388,7 @@ function App() {
           {/* Main Leaderboard */}
           <div className="lg:col-span-2 space-y-4">
              <div className="flex items-center justify-between px-1">
-                <h2 className="text-lg font-bold text-apple-text">Top Profiles</h2>
+                <h2 className="text-lg font-bold text-apple-text">{getListTitle()}</h2>
              </div>
              <LeaderboardTable users={users} sortBy={sortBy} loading={loading} error={error} />
              
