@@ -89,7 +89,7 @@ export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({ users, sortB
                            </span>
                          )}
                       </div>
-                      <div className="text-sm text-slate-500 font-mono truncate mt-0.5">@{user.login}</div>
+                      <div className="text-sm text-slate-500 truncate mt-0.5">@{user.login}</div>
                       {user.location && (
                          <div className="text-xs text-slate-400 mt-1 flex items-center gap-1.5 truncate max-w-[200px]">
                            <MapPin size={11} className="shrink-0" /> 
@@ -101,19 +101,19 @@ export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({ users, sortB
                 </td>
                 <td className="py-5 px-6 text-right">
                    <div className="flex flex-col items-end">
-                      <span className={`font-mono font-semibold ${sortBy === SortOption.CONTRIBUTIONS ? 'text-indigo-600 text-xl' : 'text-slate-700 text-lg'}`}>
+                      <span className={`font-semibold ${sortBy === SortOption.CONTRIBUTIONS ? 'text-indigo-600 text-xl' : 'text-slate-700 text-lg'}`}>
                         {user.recent_activity_count !== undefined ? user.recent_activity_count : '-'}
                       </span>
                       <span className="text-[10px] text-slate-400 truncate max-w-[80px] font-medium uppercase tracking-wide">recent events</span>
                    </div>
                 </td>
                 <td className="py-5 px-6 text-right">
-                  <span className={`font-mono font-semibold ${sortBy === SortOption.FOLLOWERS ? 'text-indigo-600 text-xl' : 'text-slate-700 text-lg'}`}>
+                  <span className={`font-semibold ${sortBy === SortOption.FOLLOWERS ? 'text-indigo-600 text-xl' : 'text-slate-700 text-lg'}`}>
                     {user.followers.toLocaleString()}
                   </span>
                 </td>
                 <td className="py-5 px-6 text-right hidden sm:table-cell">
-                  <span className={`font-mono font-semibold ${sortBy === SortOption.REPOS ? 'text-indigo-600 text-xl' : 'text-slate-700 text-lg'}`}>
+                  <span className={`font-semibold ${sortBy === SortOption.REPOS ? 'text-indigo-600 text-xl' : 'text-slate-700 text-lg'}`}>
                     {user.public_repos.toLocaleString()}
                   </span>
                 </td>

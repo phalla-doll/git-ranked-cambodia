@@ -421,7 +421,7 @@ function App() {
                   </div>
                   Top Developers in {location}
                 </h2>
-                <span className="text-xs font-mono text-slate-500 bg-white border border-slate-200 px-3 py-1.5 rounded-full shadow-sm">
+                <span className="text-xs text-slate-500 bg-white border border-slate-200 px-3 py-1.5 rounded-full shadow-sm">
                   Rate Limit Safe
                 </span>
              </div>

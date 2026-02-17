@@ -14,7 +14,7 @@ export const StatCard: React.FC<StatCardProps> = ({ label, value, icon: Icon, tr
     <div className="bg-white rounded-xl p-6 border border-slate-100 shadow-sm flex items-start justify-between transition-all duration-200 hover:shadow-md hover:border-slate-200">
       <div>
         <p className="text-slate-500 text-sm font-medium mb-2">{label}</p>
-        <h3 className="text-3xl font-semibold text-slate-800 tracking-tight font-mono">{value}</h3>
+        <h3 className="text-3xl font-semibold text-slate-800 tracking-tight">{value}</h3>
         {trend && (
           <p className="text-xs text-slate-400 mt-2 font-medium">
             {trend}

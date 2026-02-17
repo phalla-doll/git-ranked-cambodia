@@ -47,7 +47,7 @@ export const UserModal: React.FC<UserModalProps> = ({ user, isOpen, onClose }) =
 
           <div className="mb-5">
             <h2 className="text-2xl font-semibold text-slate-900 tracking-tight">{user.name || user.login}</h2>
-            <p className="text-slate-500 font-mono text-sm mt-0.5">@{user.login}</p>
+            <p className="text-slate-500 text-sm mt-0.5">@{user.login}</p>
           </div>
 
           {user.bio && (
@@ -58,19 +58,19 @@ export const UserModal: React.FC<UserModalProps> = ({ user, isOpen, onClose }) =
 
           <div className="grid grid-cols-4 gap-4 mb-8 border-y border-slate-100 py-6">
             <div className="text-center">
-              <div className="text-xl font-semibold text-slate-900 font-mono">{user.public_repos}</div>
+              <div className="text-xl font-semibold text-slate-900">{user.public_repos}</div>
               <div className="text-[10px] text-slate-500 uppercase tracking-wider font-semibold mt-1">Repos</div>
             </div>
             <div className="text-center border-l border-slate-100">
-              <div className="text-xl font-semibold text-slate-900 font-mono">{user.followers}</div>
+              <div className="text-xl font-semibold text-slate-900">{user.followers}</div>
               <div className="text-[10px] text-slate-500 uppercase tracking-wider font-semibold mt-1">Followers</div>
             </div>
             <div className="text-center border-l border-slate-100">
-              <div className="text-xl font-semibold text-slate-900 font-mono">{user.following}</div>
+              <div className="text-xl font-semibold text-slate-900">{user.following}</div>
               <div className="text-[10px] text-slate-500 uppercase tracking-wider font-semibold mt-1">Following</div>
             </div>
             <div className="text-center border-l border-slate-100">
-              <div className="text-xl font-semibold text-indigo-600 font-mono">
+              <div className="text-xl font-semibold text-indigo-600">
                   {user.recent_activity_count !== undefined ? user.recent_activity_count : '-'}
               </div>
               <div className="text-[10px] text-slate-500 uppercase tracking-wider font-semibold mt-1">Activity</div>
