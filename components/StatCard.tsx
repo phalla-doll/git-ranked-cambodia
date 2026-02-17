@@ -15,10 +15,7 @@ export const StatCard: React.FC<StatCardProps> = ({ label, value }) => {
       <h3 className="text-6xl sm:text-7xl font-normal text-apple-text tracking-tighter leading-none">
         {value}
       </h3>
-      <div className="flex items-center gap-2">
-        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
-        <p className="text-gray-500 text-sm font-medium">{label}</p>
-      </div>
+      <p className="text-gray-500 text-sm font-medium">{label}</p>
     </div>
   );
 };
