@@ -332,7 +332,7 @@ function App() {
           </div>
 
           {/* Pill Tabs */}
-          <div className="flex bg-gray-100/80 p-1.5 rounded-full">
+          <div className="flex overflow-x-auto custom-scrollbar bg-white/60 backdrop-blur-xl p-1.5 rounded-full border border-gray-200/50 shadow-soft w-full md:w-auto">
              {[
                { id: SortOption.FOLLOWERS, label: 'Followers' },
                { id: SortOption.CONTRIBUTIONS, label: 'Contributions' },
@@ -342,10 +342,10 @@ function App() {
                 <button
                   key={option.id}
                   onClick={() => setSortBy(option.id)}
-                  className={`px-5 py-2 text-xs font-semibold rounded-full transition-all whitespace-nowrap ${
+                  className={`flex-1 md:flex-none px-4 sm:px-6 py-2 text-xs sm:text-sm font-medium rounded-full transition-all duration-300 ease-out whitespace-nowrap ${
                     sortBy === option.id 
-                      ? 'bg-white text-black shadow-sm' 
-                      : 'text-gray-500 hover:text-gray-900'
+                      ? 'bg-white text-apple-text shadow-[0_2px_8px_rgba(0,0,0,0.08)] ring-1 ring-black/5 font-semibold scale-100' 
+                      : 'text-gray-500 hover:text-gray-800 hover:bg-gray-100/50 scale-95'
                   }`}
                 >
                   {option.label}
