@@ -2,8 +2,8 @@ import { GitHubUserDetail, GitHubUserSummary, SearchResponse, SortOption } from 
 
 const BASE_URL = 'https://api.github.com';
 
-// Mock data to use when rate limited or for demo purposes
-const MOCK_USERS_CAMBODIA: GitHubUserDetail[] = [
+// Base mock data
+const BASE_MOCK_USERS: GitHubUserDetail[] = [
   {
     login: "tharith-p",
     id: 101,
@@ -96,6 +96,40 @@ const MOCK_USERS_CAMBODIA: GitHubUserDetail[] = [
   }
 ];
 
+// Generate 50 mock users
+const generateMockUsers = (count: number): GitHubUserDetail[] => {
+  const users = [...BASE_MOCK_USERS];
+  const companies = ["Freelance", "TechKhmer", "StartupKH", "AngkorDev", "MekongSoft", "Smart Axiata", null];
+  const locations = ["Phnom Penh", "Siem Reap", "Battambang", "Kampot", "Sihanoukville", "Cambodia"];
+  const firstNames = ["Chan", "Sok", "Dara", "Vireak", "Srey", "Piseth", "Rithy", "Nary", "Bona", "Sophea"];
+  const lastNames = ["Heng", "Lim", "Ng", "Chea", "Ly", "Keo", "Ouk", "Seng", "Mao", "Sok"];
+
+  for (let i = users.length; i < count; i++) {
+    const template = users[i % users.length];
+    const randomName = `${firstNames[Math.floor(Math.random() * firstNames.length)]} ${lastNames[Math.floor(Math.random() * lastNames.length)]}`;
+    const randomLogin = randomName.toLowerCase().replace(" ", "_") + Math.floor(Math.random() * 1000);
+    
+    users.push({
+        ...template,
+        id: 2000 + i,
+        login: randomLogin,
+        name: randomName,
+        followers: Math.floor(template.followers * (0.1 + Math.random() * 0.8)),
+        public_repos: Math.floor(template.public_repos * (0.2 + Math.random() * 1.5)),
+        recent_activity_count: Math.floor((template.recent_activity_count || 0) * (0.2 + Math.random() * 1.5)),
+        company: companies[Math.floor(Math.random() * companies.length)],
+        location: locations[Math.floor(Math.random() * locations.length)],
+        avatar_url: `https://picsum.photos/200/200?random=${i + 10}`,
+        created_at: new Date(Date.now() - Math.floor(Math.random() * 100000000000)).toISOString()
+    });
+  }
+  
+  // Return sorted by default (followers) for mock consistency
+  return users.sort((a, b) => b.followers - a.followers);
+};
+
+const MOCK_USERS_CAMBODIA = generateMockUsers(50);
+
 export const getUserByName = async (username: string, apiKey?: string): Promise<GitHubUserDetail | null> => {
   const headers: HeadersInit = {
     'Accept': 'application/vnd.github.v3+json',
@@ -157,7 +191,8 @@ export const searchUsersInLocation = async (
     // then we will re-sort locally based on actual events.
     const apiSort = sort === SortOption.CONTRIBUTIONS ? 'repositories' : sort;
     
-    const searchUrl = `${BASE_URL}/search/users?q=${encodeURIComponent(q)}&sort=${apiSort}&order=desc&per_page=10&page=${page}`;
+    // Fetch top 50
+    const searchUrl = `${BASE_URL}/search/users?q=${encodeURIComponent(q)}&sort=${apiSort}&order=desc&per_page=50&page=${page}`;
     
     const searchRes = await fetch(searchUrl, { headers });
 
@@ -199,7 +234,11 @@ export const searchUsersInLocation = async (
         try {
             // 1. Fetch User Details
             const detailRes = await fetch(`${BASE_URL}/users/${item.login}`, { headers });
+            
+            // If we hit rate limit during details fetch, we might return null here
+            // In a real app we might want to fail gracefully or retry, but here we just skip
             if (!detailRes.ok) return null;
+            
             const userDetail = await detailRes.json() as GitHubUserDetail;
 
             // 2. Fetch Recent Events (Activity Proxy)
@@ -224,6 +263,13 @@ export const searchUsersInLocation = async (
     });
 
     let detailedUsers = (await Promise.all(detailPromises)).filter((u): u is GitHubUserDetail => u !== null);
+    
+    // If we got 0 detailed users but we had search results, it's highly likely we hit a rate limit during details fetch.
+    // In this case, fallback to mock data so the user sees something.
+    if (detailedUsers.length === 0 && searchData.items.length > 0) {
+        console.warn("Details fetch likely rate limited. Fallback to mock.");
+        return { users: MOCK_USERS_CAMBODIA, total_count: 500, rateLimited: true };
+    }
 
     // If sorting by CONTRIBUTIONS, we need to re-sort the page results based on the fetched activity count
     // Note: This only sorts the *current page* of results, not the entire database (GitHub API limitation).
