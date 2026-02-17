@@ -8,7 +8,8 @@ import {
   Terminal, 
   AlertCircle,
   Key,
-  Loader2
+  Loader2,
+  ExternalLink
 } from 'lucide-react';
 import { 
   BarChart, 
@@ -33,6 +34,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [sortBy, setSortBy] = useState<SortOption>(SortOption.FOLLOWERS);
   const [totalCount, setTotalCount] = useState(0);
+  const [rateLimitHit, setRateLimitHit] = useState(false);
 
   // User Search State
   const [userSearchQuery, setUserSearchQuery] = useState('');
@@ -44,10 +46,15 @@ function App() {
   const fetchUsers = useCallback(async () => {
     setLoading(true);
     setUsers([]); // Clear current list on new search
+    setRateLimitHit(false);
     try {
-      const { users: fetchedUsers, total_count } = await searchUsersInLocation(location, sortBy, 1, apiKey);
+      const { users: fetchedUsers, total_count, rateLimited } = await searchUsersInLocation(location, sortBy, 1, apiKey);
       setUsers(fetchedUsers);
       setTotalCount(total_count);
+      setRateLimitHit(rateLimited);
+      if (rateLimited && !apiKey) {
+        // Optional: auto-show key input or just show banner
+      }
     } catch (error) {
       console.error(error);
     } finally {
@@ -146,12 +153,42 @@ function App() {
         </div>
       </nav>
 
+      {/* Rate Limit Banner */}
+      {rateLimitHit && (
+        <div className="bg-amber-50 border-b border-amber-200 animate-in slide-in-from-top-2 duration-300">
+           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between flex-wrap gap-2">
+              <div className="flex items-center gap-3">
+                <AlertCircle size={18} className="text-amber-600 shrink-0" />
+                <span className="text-sm text-amber-800 leading-tight">
+                  <span className="font-bold">API Rate Limit Reached.</span> You are viewing demo data.
+                </span>
+              </div>
+              <button 
+                onClick={() => setShowKeyInput(true)}
+                className="text-xs font-semibold bg-amber-100 hover:bg-amber-200 text-amber-900 px-3 py-1.5 rounded-full transition-colors"
+              >
+                Add API Key to Restore
+              </button>
+           </div>
+        </div>
+      )}
+
       {/* API Key Modal / Dropdown */}
       {showKeyInput && (
-        <div className="bg-slate-900 text-white p-4">
+        <div className="bg-slate-900 text-white p-4 animate-in slide-in-from-top-5 duration-200">
            <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-start sm:items-center gap-4">
              <div className="flex-1">
-               <p className="text-sm font-medium text-slate-300 mb-1">Enter GitHub Personal Access Token (Optional)</p>
+               <div className="flex items-center gap-2 mb-1">
+                 <p className="text-sm font-medium text-slate-300">Enter GitHub Personal Access Token (Optional)</p>
+                 <a 
+                   href="https://github.com/settings/tokens/new?description=GitRanked&scopes=read:user" 
+                   target="_blank" 
+                   rel="noopener noreferrer"
+                   className="text-indigo-400 hover:text-indigo-300 text-xs flex items-center gap-1 hover:underline"
+                 >
+                   Generate Token <ExternalLink size={12} />
+                 </a>
+               </div>
                <p className="text-xs text-slate-500">Increases rate limit from 60 to 5000 requests/hour. Stored only in memory.</p>
              </div>
              <div className="flex w-full sm:w-auto gap-2">

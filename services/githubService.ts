@@ -120,7 +120,7 @@ export const searchUsersInLocation = async (
   sort: SortOption,
   page: number = 1,
   apiKey?: string
-): Promise<{ users: GitHubUserDetail[], total_count: number }> => {
+): Promise<{ users: GitHubUserDetail[], total_count: number, rateLimited: boolean }> => {
   
   const headers: HeadersInit = {
     'Accept': 'application/vnd.github.v3+json',
@@ -144,7 +144,7 @@ export const searchUsersInLocation = async (
              console.warn("Rate limited. Returning mock data.");
              // Simulate network delay for mock
              await new Promise(resolve => setTimeout(resolve, 800));
-             return { users: MOCK_USERS_CAMBODIA, total_count: 500 }; 
+             return { users: MOCK_USERS_CAMBODIA, total_count: 500, rateLimited: true }; 
         }
         throw new Error(`GitHub Search API Error: ${searchRes.statusText}`);
     }
@@ -165,12 +165,13 @@ export const searchUsersInLocation = async (
 
     return {
         users: detailedUsers,
-        total_count: searchData.total_count
+        total_count: searchData.total_count,
+        rateLimited: false
     };
 
   } catch (error) {
     console.error("Failed to fetch GitHub data", error);
     // Fallback to mock data on error for better UX in this demo
-    return { users: MOCK_USERS_CAMBODIA, total_count: 500 };
+    return { users: MOCK_USERS_CAMBODIA, total_count: 500, rateLimited: true };
   }
 };
