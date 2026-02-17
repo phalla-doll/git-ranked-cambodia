@@ -329,7 +329,17 @@ export const searchUsersInLocation = async (
   }
   
   try {
-    const q = `location:${location} type:user`;
+    let q = `location:${location} type:user`;
+    
+    // FEATURE: Filter by 'pushed' date when sorting by contributions.
+    // This acts as a proxy for "Active Users" since we cannot sort by contribution count directly.
+    // We filter for users who have pushed code in the last year.
+    if (sort === SortOption.CONTRIBUTIONS) {
+        const oneYearAgo = new Date();
+        oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+        const dateStr = oneYearAgo.toISOString().split('T')[0];
+        q += ` pushed:>${dateStr}`;
+    }
     
     // FIX: Using 'repositories' to find top contributors excludes users with high contributions but fewer repos.
     // 'followers' is a much better proxy for active/popular developers.

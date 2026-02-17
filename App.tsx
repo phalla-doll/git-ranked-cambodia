@@ -193,6 +193,11 @@ function App() {
     }
   };
 
+  const getTotalLabel = () => {
+    if (sortBy === SortOption.CONTRIBUTIONS) return "Active Developers";
+    return "Total Developers";
+  };
+
   // Stats for the top cards
   const topUser = users.length > 0 ? users[0] : null;
   const totalFollowers = users.reduce((acc, user) => acc + user.followers, 0);
@@ -367,7 +372,7 @@ function App() {
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <StatCard 
-            label="Total Developers" 
+            label={getTotalLabel()} 
             value={totalCount > 0 ? (totalCount > 1000 ? `${(totalCount/1000).toFixed(1)}K+` : totalCount) : 0} 
             icon={Users} 
           />
