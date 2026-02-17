@@ -177,13 +177,13 @@ function App() {
   }));
 
   return (
-    <div className="min-h-screen bg-slate-50/50 pb-20">
+    <div className="min-h-screen bg-slate-50/50 pb-24 font-sans">
       {/* Navbar */}
-      <nav className="bg-white border-b border-slate-200 sticky top-0 z-30">
+      <nav className="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm backdrop-blur-md bg-white/90">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-indigo-600 rounded-lg shadow-sm">
+              <div className="p-2 bg-indigo-600 rounded-lg shadow-sm ring-1 ring-indigo-600/10">
                 <Terminal className="text-white h-5 w-5" />
               </div>
               <span className="font-bold text-xl tracking-tight text-slate-900 hidden sm:block">
@@ -196,7 +196,7 @@ function App() {
             
             <div className="flex items-center gap-4">
               {/* User Search Input */}
-              <div className="hidden md:flex items-center gap-2 bg-slate-100 rounded-lg px-3 py-1.5 focus-within:ring-2 focus-within:ring-indigo-500/20 transition-all border border-transparent focus-within:border-indigo-200">
+              <div className="hidden md:flex items-center gap-2 bg-slate-100/80 rounded-lg px-3 py-2 focus-within:ring-2 focus-within:ring-indigo-500/20 transition-all border border-transparent focus-within:border-indigo-200 focus-within:bg-white">
                 {isSearchingUser ? (
                   <Loader2 size={16} className="text-indigo-500 animate-spin" />
                 ) : (
@@ -215,9 +215,9 @@ function App() {
 
               <button 
                 onClick={() => setShowKeyInput(!showKeyInput)}
-                className="text-slate-500 hover:text-indigo-600 transition-colors flex items-center gap-2 text-sm font-medium"
+                className="text-slate-500 hover:text-indigo-600 transition-colors flex items-center gap-2 text-sm font-medium px-3 py-2 rounded-lg hover:bg-slate-50"
               >
-                <Key size={16} />
+                <Key size={18} />
                 <span className="hidden sm:inline">API Key</span>
               </button>
             </div>
@@ -247,33 +247,33 @@ function App() {
 
       {/* API Key Modal / Dropdown */}
       {showKeyInput && (
-        <div className="bg-slate-900 text-white p-4 animate-in slide-in-from-top-5 duration-200">
-           <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-start sm:items-center gap-4">
-             <div className="flex-1">
-               <div className="flex items-center gap-2 mb-1">
-                 <p className="text-sm font-medium text-slate-300">Enter GitHub Personal Access Token (Optional)</p>
+        <div className="bg-slate-900 text-white p-6 animate-in slide-in-from-top-5 duration-200 shadow-xl">
+           <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-start sm:items-center gap-6">
+             <div className="flex-1 space-y-2">
+               <div className="flex items-center gap-2">
+                 <p className="text-base font-medium text-slate-200">Enter GitHub Personal Access Token (Optional)</p>
                  <a 
                    href="https://github.com/settings/tokens/new?description=GitRanked&scopes=read:user" 
                    target="_blank" 
                    rel="noopener noreferrer"
-                   className="text-indigo-400 hover:text-indigo-300 text-xs flex items-center gap-1 hover:underline"
+                   className="text-indigo-400 hover:text-indigo-300 text-xs flex items-center gap-1 hover:underline bg-indigo-500/10 px-2 py-1 rounded"
                  >
                    Generate Token <ExternalLink size={12} />
                  </a>
                </div>
-               <p className="text-xs text-slate-500">Increases rate limit from 60 to 5000 requests/hour. Stored locally in your browser.</p>
+               <p className="text-sm text-slate-400">Increases rate limit from 60 to 5000 requests/hour. Stored locally in your browser.</p>
              </div>
-             <div className="flex w-full sm:w-auto gap-2">
+             <div className="flex w-full sm:w-auto gap-3">
                <input 
                   type="password" 
                   placeholder="ghp_..." 
                   value={apiKey}
                   onChange={(e) => setApiKey(e.target.value)}
-                  className="bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm w-full sm:w-64 focus:outline-none focus:border-indigo-500"
+                  className="bg-slate-800 border border-slate-700 rounded-lg px-4 py-2.5 text-sm w-full sm:w-72 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all placeholder-slate-500"
                />
                <button 
                  onClick={handleSaveApiKey}
-                 className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded text-sm font-medium transition-colors"
+                 className="bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2.5 rounded-lg text-sm font-medium transition-colors shadow-lg shadow-indigo-500/20"
                >
                  Save & Reload
                </button>
@@ -284,24 +284,24 @@ function App() {
 
       {/* Hero / Filter Section */}
       <div className="bg-white border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-12">
+          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
             <div className="max-w-xl w-full">
-               <h1 className="text-3xl font-bold text-slate-900 mb-2">
+               <h1 className="text-4xl font-semibold text-slate-900 mb-4 tracking-tight">
                  GitRanked <span className="text-indigo-600">{location}</span>
                </h1>
-               <p className="text-slate-500 mb-6">
+               <p className="text-slate-500 mb-8 text-lg leading-relaxed font-light">
                  Discover the most active, influential, and cracked developers in your area. 
                  Ranking based on public activity and community engagement.
                </p>
 
                <form onSubmit={handleSearch} className="relative group" ref={inputWrapperRef}>
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                     <MapPin className="h-5 w-5 text-slate-400 group-focus-within:text-indigo-500 transition-colors" />
                   </div>
                   <input
                     type="text"
-                    className="block w-full pl-10 pr-4 py-3 border border-slate-300 rounded-xl leading-5 bg-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-shadow sm:text-sm shadow-sm"
+                    className="block w-full pl-12 pr-4 py-4 border border-slate-200 rounded-xl leading-5 bg-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all shadow-sm text-base"
                     placeholder="Enter location (e.g., Cambodia, Phnom Penh, Tokyo)"
                     value={location}
                     onChange={handleLocationChange}
@@ -315,15 +315,15 @@ function App() {
                   {showSuggestions && suggestions.length > 0 && (
                     <ul 
                       ref={suggestionsRef}
-                      className="absolute top-full left-0 right-0 mt-1 bg-white border border-slate-200 rounded-xl shadow-lg z-50 max-h-60 overflow-y-auto"
+                      className="absolute top-full left-0 right-0 mt-2 bg-white border border-slate-100 rounded-xl shadow-xl z-50 max-h-72 overflow-y-auto"
                     >
                       {suggestions.map((suggestion, index) => (
                         <li 
                           key={index}
                           onClick={() => handleSelectSuggestion(suggestion)}
-                          className="px-4 py-3 text-sm text-slate-700 hover:bg-slate-50 cursor-pointer flex items-center gap-2"
+                          className="px-5 py-3.5 text-sm text-slate-700 hover:bg-slate-50 cursor-pointer flex items-center gap-3 transition-colors border-b border-slate-50 last:border-0"
                         >
-                          <MapPin size={14} className="text-slate-400" />
+                          <MapPin size={16} className="text-slate-400" />
                           <span dangerouslySetInnerHTML={{
                              __html: suggestion.replace(new RegExp(`(${escapeRegExp(location)})`, 'gi'), '<span class="font-bold text-indigo-600">$1</span>')
                           }} />
@@ -332,51 +332,51 @@ function App() {
                     </ul>
                   )}
 
-                  <button type="submit" className="absolute inset-y-1.5 right-1.5 bg-slate-900 text-white px-4 rounded-lg text-sm font-medium hover:bg-slate-800 transition-colors">
+                  <button type="submit" className="absolute inset-y-2 right-2 bg-slate-900 text-white px-6 rounded-lg text-sm font-medium hover:bg-slate-800 transition-all shadow-md hover:shadow-lg transform active:scale-95">
                     Search
                   </button>
                </form>
             </div>
 
             {/* Filter Tabs */}
-            <div className="flex bg-slate-100 p-1 rounded-xl self-start lg:self-end overflow-x-auto">
+            <div className="flex bg-slate-100 p-1.5 rounded-xl self-start lg:self-end overflow-x-auto shadow-inner">
               <button
                 onClick={() => setSortBy(SortOption.FOLLOWERS)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
+                className={`px-5 py-2.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
                   sortBy === SortOption.FOLLOWERS 
-                    ? 'bg-white text-indigo-600 shadow-sm' 
-                    : 'text-slate-500 hover:text-slate-700'
+                    ? 'bg-white text-indigo-600 shadow-sm ring-1 ring-slate-200' 
+                    : 'text-slate-500 hover:text-slate-700 hover:bg-slate-200/50'
                 }`}
               >
                 Most Followed
               </button>
               <button
                 onClick={() => setSortBy(SortOption.CONTRIBUTIONS)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap flex items-center gap-1.5 ${
+                className={`px-5 py-2.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap flex items-center gap-2 ${
                   sortBy === SortOption.CONTRIBUTIONS 
-                    ? 'bg-white text-indigo-600 shadow-sm' 
-                    : 'text-slate-500 hover:text-slate-700'
+                    ? 'bg-white text-indigo-600 shadow-sm ring-1 ring-slate-200' 
+                    : 'text-slate-500 hover:text-slate-700 hover:bg-slate-200/50'
                 }`}
               >
-                <Activity size={14} className={sortBy === SortOption.CONTRIBUTIONS ? 'text-indigo-500' : 'text-slate-400'} />
+                <Activity size={16} className={sortBy === SortOption.CONTRIBUTIONS ? 'text-indigo-500' : 'text-slate-400'} />
                 Most Contributions
               </button>
               <button
                 onClick={() => setSortBy(SortOption.REPOS)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
+                className={`px-5 py-2.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
                   sortBy === SortOption.REPOS 
-                    ? 'bg-white text-indigo-600 shadow-sm' 
-                    : 'text-slate-500 hover:text-slate-700'
+                    ? 'bg-white text-indigo-600 shadow-sm ring-1 ring-slate-200' 
+                    : 'text-slate-500 hover:text-slate-700 hover:bg-slate-200/50'
                 }`}
               >
                 Most Public Repos
               </button>
                <button
                 onClick={() => setSortBy(SortOption.JOINED)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
+                className={`px-5 py-2.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
                   sortBy === SortOption.JOINED 
-                    ? 'bg-white text-indigo-600 shadow-sm' 
-                    : 'text-slate-500 hover:text-slate-700'
+                    ? 'bg-white text-indigo-600 shadow-sm ring-1 ring-slate-200' 
+                    : 'text-slate-500 hover:text-slate-700 hover:bg-slate-200/50'
                 }`}
               >
                 Newest
@@ -386,7 +386,7 @@ function App() {
         </div>
       </div>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
         
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -413,13 +413,15 @@ function App() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Leaderboard */}
-          <div className="lg:col-span-2 space-y-4">
+          <div className="lg:col-span-2 space-y-6">
              <div className="flex items-center justify-between">
-                <h2 className="text-lg font-medium text-slate-800 flex items-center gap-2">
-                  <Code2 className="text-indigo-600 h-5 w-5" />
+                <h2 className="text-xl font-semibold text-slate-800 flex items-center gap-2.5 tracking-tight">
+                  <div className="p-1.5 bg-indigo-100 rounded-md">
+                    <Code2 className="text-indigo-600 h-5 w-5" />
+                  </div>
                   Top Developers in {location}
                 </h2>
-                <span className="text-xs font-mono text-slate-400 bg-slate-100 px-2 py-1 rounded">
+                <span className="text-xs font-mono text-slate-500 bg-white border border-slate-200 px-3 py-1.5 rounded-full shadow-sm">
                   Rate Limit Safe
                 </span>
              </div>
@@ -427,52 +429,52 @@ function App() {
           </div>
 
           {/* Sidebar / Charts */}
-          <div className="space-y-6">
-            <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-              <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wide mb-6">
+          <div className="space-y-8">
+            <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-8">
+              <h3 className="text-sm font-semibold text-slate-800 uppercase tracking-wide mb-8">
                 Follower Distribution
               </h3>
               <div className="h-64 w-full text-xs">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={chartData} layout="vertical" margin={{ left: 0, right: 30 }}>
-                    <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#e2e8f0" />
+                    <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#f1f5f9" />
                     <XAxis type="number" hide />
                     <YAxis 
                       dataKey="name" 
                       type="category" 
                       width={80} 
-                      tick={{fill: '#64748b', fontSize: 10}} 
+                      tick={{fill: '#64748b', fontSize: 11, fontWeight: 500}} 
                       axisLine={false}
                       tickLine={false}
                     />
                     <Tooltip 
-                      cursor={{fill: '#f1f5f9'}}
-                      contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                      cursor={{fill: '#f8fafc'}}
+                      contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
                     />
                     <Bar 
                       dataKey="followers" 
                       fill="#4f46e5" 
                       radius={[0, 4, 4, 0]} 
-                      barSize={20}
+                      barSize={24}
                     />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
             </div>
 
-            <div className="bg-indigo-900 rounded-xl shadow-lg p-6 text-white relative overflow-hidden">
-               <div className="absolute top-0 right-0 p-8 opacity-10">
-                 <GitBranch size={120} />
+            <div className="bg-indigo-900 rounded-xl shadow-lg p-8 text-white relative overflow-hidden group">
+               <div className="absolute -top-10 -right-10 p-8 opacity-10 group-hover:opacity-20 transition-opacity duration-500">
+                 <GitBranch size={160} />
                </div>
-               <h3 className="text-lg font-semibold mb-2 relative z-10">Api Limitations</h3>
-               <p className="text-indigo-200 text-sm leading-relaxed relative z-10 mb-4">
+               <h3 className="text-lg font-semibold mb-3 relative z-10 tracking-tight">Api Limitations</h3>
+               <p className="text-indigo-100/80 text-sm leading-relaxed relative z-10 mb-6 font-light">
                  GitHub's free API limits searches to prevent abuse. 
                  This dashboard ranks users by Followers and Repositories as proxies for contribution, 
                  since contribution graphs are private data.
                </p>
-               <div className="flex items-start gap-2 text-xs text-indigo-300 bg-indigo-800/50 p-3 rounded border border-indigo-700">
-                  <AlertCircle size={16} className="shrink-0 mt-0.5" />
-                  <span>
+               <div className="flex items-start gap-3 text-xs text-indigo-200 bg-indigo-800/50 p-4 rounded-lg border border-indigo-700/50 backdrop-blur-sm">
+                  <AlertCircle size={16} className="shrink-0 mt-0.5 text-indigo-300" />
+                  <span className="leading-relaxed">
                     If data stops loading, you may have hit the 60 requests/hr limit. 
                     Add a token in the top bar to increase this to 5000.
                   </span>
