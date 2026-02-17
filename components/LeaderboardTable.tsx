@@ -1,6 +1,6 @@
 import React from 'react';
 import { GitHubUserDetail, SortOption } from '../types';
-import { ExternalLink, Activity, AlertTriangle, SearchX, MapPin, Building } from 'lucide-react';
+import { ExternalLink, Activity, AlertTriangle, SearchX, MapPin, Building, Trophy, Medal } from 'lucide-react';
 import { UserProfileStats } from './UserProfileStats';
 
 interface LeaderboardTableProps {
@@ -9,6 +9,29 @@ interface LeaderboardTableProps {
   loading: boolean;
   error?: string | null;
 }
+
+const RankBadge = ({ rank }: { rank: number }) => {
+  let color = "bg-dark-surface text-dark-text border-dark-border";
+  let icon = null;
+
+  if (rank === 1) {
+    color = "bg-yellow-500/10 text-yellow-500 border-yellow-500/20 shadow-[0_0_10px_rgba(234,179,8,0.2)]";
+    icon = <Trophy size={10} className="mr-1" />;
+  } else if (rank === 2) {
+    color = "bg-slate-300/10 text-slate-300 border-slate-300/20";
+    icon = <Medal size={10} className="mr-1" />;
+  } else if (rank === 3) {
+    color = "bg-amber-700/10 text-amber-600 border-amber-700/20";
+    icon = <Medal size={10} className="mr-1" />;
+  }
+
+  return (
+    <div className={`flex items-center px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider border rounded-full ${color}`}>
+      {icon}
+      #{rank}
+    </div>
+  );
+};
 
 export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({ users, sortBy, loading, error }) => {
   
@@ -72,120 +95,105 @@ export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({ users, sortB
     );
   }
 
+  // 2-Column Grid Layout (Responsive)
   return (
-    <div className="flex flex-col gap-4 relative min-h-[500px]">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-4 relative min-h-[500px]">
       {users.map((user, index) => (
         <div 
           key={user.id} 
-          className="group relative bg-dark-surface border border-dark-border hover:border-dark-text/30 transition-all p-0 flex flex-col md:flex-row shadow-sm hover:shadow-lg hover:shadow-black/20 overflow-hidden"
+          className="group relative bg-dark-surface border border-dark-border hover:border-dark-text/30 transition-all shadow-sm hover:shadow-lg hover:shadow-black/20 overflow-hidden flex flex-col h-full"
         >
              {/* Hover Glow */}
-             <div className="absolute inset-0 bg-gradient-to-r from-neon-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+             <div className="absolute inset-0 bg-gradient-to-br from-neon-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
 
-             {/* Rank Badge */}
-             <div className={`absolute top-0 left-0 z-10 px-3 py-1 text-xs font-semibold border-r border-b border-dark-border font-mono shadow-sm
-                ${index === 0 ? 'bg-neon-500 text-white' : 
-                  index === 1 ? 'bg-white text-dark-bg' : 
-                  index === 2 ? 'bg-dark-text text-white' : 'bg-dark-bg text-dark-text'}`}>
-                #{index + 1}
-             </div>
-
-             {/* Main Content Area */}
-             <div className="flex-1 p-5 md:p-6 flex flex-col md:flex-row gap-6 items-start md:items-center relative z-0">
-                
-                {/* Profile Info */}
-                <div className="flex items-center gap-5 flex-1 min-w-0 w-full md:w-auto mt-6 md:mt-0">
-                    <div className="relative shrink-0">
-                      <img 
-                          src={user.avatar_url} 
-                          alt={user.login} 
-                          className="w-16 h-16 sm:w-20 sm:h-20 border border-dark-border bg-dark-bg object-cover shadow-md"
-                          loading="lazy"
-                      />
-                      {index < 3 && (
-                        <div className="absolute -bottom-2 -right-2 w-6 h-6 bg-dark-surface border border-dark-border flex items-center justify-center rounded-full text-[10px] shadow-sm">
-                           {index === 0 ? '👑' : index === 1 ? '🥈' : '🥉'}
-                        </div>
-                      )}
-                    </div>
-                    
-                    <div className="min-w-0 flex-1 flex flex-col justify-center">
-                        {/* Name and Handle Stacked */}
-                        <div>
-                          <h3 className="text-lg sm:text-xl font-bold text-white group-hover:text-neon-400 transition-colors break-words leading-tight">
-                              {user.name || user.login}
-                          </h3>
-                          <a 
-                             href={user.html_url} 
-                             target="_blank" 
-                             rel="noopener noreferrer"
-                             className="text-sm text-neon-500/80 font-mono hover:text-neon-400 hover:underline w-fit block mt-0.5"
-                          >
-                            @{user.login}
-                          </a>
+             {/* Top Section */}
+             <div className="p-5 flex-1 relative z-10">
+                <div className="flex justify-between items-start mb-4">
+                    <div className="flex items-start gap-3">
+                        {/* Avatar */}
+                        <div className="relative shrink-0">
+                           <img 
+                              src={user.avatar_url} 
+                              alt={user.login} 
+                              className="w-12 h-12 rounded-sm border border-dark-border bg-dark-bg object-cover shadow-sm group-hover:border-neon-500/50 transition-colors"
+                              loading="lazy"
+                           />
+                           {index < 3 && (
+                               <div className="absolute -top-1 -right-1 w-3 h-3 bg-neon-500 rounded-full border-2 border-dark-surface"></div>
+                           )}
                         </div>
                         
-                        {/* Meta Tags */}
-                        <div className="flex flex-wrap gap-y-1 gap-x-3 mt-2 text-xs text-dark-text/80">
-                           {user.location && (
-                             <div className="flex items-center gap-1.5" title="Location">
-                               <MapPin size={11} className="text-dark-text/60" />
-                               <span className="truncate max-w-[150px]">{user.location}</span>
-                             </div>
-                           )}
-                           {user.company && (
-                             <div className="flex items-center gap-1.5" title="Company">
-                               <Building size={11} className="text-dark-text/60" />
-                               <span className="truncate max-w-[150px]">{user.company}</span>
-                             </div>
-                           )}
+                        {/* Name Block */}
+                        <div className="min-w-0">
+                            <div className="flex items-center gap-2 mb-0.5">
+                                <h3 className="font-bold text-white text-base truncate max-w-[120px] sm:max-w-[150px] group-hover:text-neon-400 transition-colors">
+                                    {user.name || user.login}
+                                </h3>
+                            </div>
+                            <a 
+                               href={user.html_url} 
+                               target="_blank" 
+                               rel="noopener noreferrer"
+                               className="text-xs text-dark-text hover:text-white font-mono flex items-center gap-1"
+                            >
+                                @{user.login}
+                            </a>
                         </div>
-
-                        {user.bio && (
-                          <p className="text-xs text-dark-text/60 mt-2.5 max-w-xl hidden sm:block line-clamp-2 leading-relaxed">
-                            {user.bio}
-                          </p>
-                        )}
                     </div>
+
+                    <RankBadge rank={index + 1} />
                 </div>
 
-                {/* Stats Grid - New Component */}
-                <div className="w-full md:w-auto shrink-0 mt-2 md:mt-0">
-                   <UserProfileStats user={user} sortBy={sortBy} />
+                {/* Bio */}
+                <div className="mb-4 h-8">
+                    {user.bio ? (
+                        <p className="text-xs text-dark-text/70 line-clamp-2 leading-relaxed">
+                            {user.bio}
+                        </p>
+                    ) : (
+                        <p className="text-xs text-dark-text/30 italic">No bio available</p>
+                    )}
                 </div>
 
-                {/* Desktop Action */}
-                <div className="hidden md:block">
-                    <a 
-                      href={user.html_url} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-center w-10 h-10 rounded-full border border-dark-border text-dark-text hover:text-white hover:bg-neon-500 hover:border-neon-500 transition-all shadow-sm group-hover:scale-110"
-                      title="View on GitHub"
-                    >
-                      <ExternalLink size={18} />
-                    </a>
+                {/* Tags */}
+                <div className="flex flex-wrap gap-2 text-[10px] text-dark-text/60 font-medium">
+                   {user.location && (
+                     <div className="flex items-center gap-1 bg-dark-bg/50 px-2 py-1 rounded border border-dark-border/50">
+                       <MapPin size={10} />
+                       <span className="truncate max-w-[100px]">{user.location}</span>
+                     </div>
+                   )}
+                   {user.company && (
+                     <div className="flex items-center gap-1 bg-dark-bg/50 px-2 py-1 rounded border border-dark-border/50">
+                       <Building size={10} />
+                       <span className="truncate max-w-[100px]">{user.company}</span>
+                     </div>
+                   )}
                 </div>
              </div>
 
-             {/* Mobile Footer Action */}
+             {/* Bottom Stats Section */}
+             <div className="mt-auto border-t border-dark-border bg-dark-bg/20 relative z-10">
+                <UserProfileStats user={user} sortBy={sortBy} flat={true} />
+             </div>
+             
+             {/* Action Button (Hidden but accessible via whole card click or specific link) */}
              <a 
-                href={user.html_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="md:hidden flex items-center justify-between px-5 py-3 bg-dark-bg/50 border-t border-dark-border text-xs text-dark-text hover:text-neon-400 hover:bg-dark-bg transition-colors"
+                href={user.html_url} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="absolute top-5 right-5 text-dark-text opacity-0 group-hover:opacity-100 hover:text-white transition-all translate-x-2 group-hover:translate-x-0"
              >
-                <span className="font-medium">View GitHub Profile</span>
-                <ExternalLink size={14} />
+                 <ExternalLink size={16} />
              </a>
         </div>
       ))}
 
       {loading && users.length > 0 && (
-          <div className="p-4 text-center text-dark-text text-xs bg-dark-surface border border-dark-border">
+          <div className="col-span-full p-4 text-center text-dark-text text-xs bg-dark-surface border border-dark-border">
              <div className="flex items-center justify-center gap-2">
                <div className="animate-spin h-3 w-3 border-2 border-neon-400 border-t-transparent"></div>
-               <span>Loading more...</span>
+               <span>Loading more developers...</span>
              </div>
           </div>
       )}
