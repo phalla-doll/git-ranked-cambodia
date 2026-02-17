@@ -6,36 +6,29 @@ interface StatCardProps {
   value: string | number;
   icon: LucideIcon;
   trend?: string;
-  color?: string;
+  color?: string; // Kept for API compatibility, but usually ignored in minimal theme
 }
 
-export const StatCard: React.FC<StatCardProps> = ({ label, value, icon: Icon, trend, color = "text-neon-400" }) => {
+export const StatCard: React.FC<StatCardProps> = ({ label, value, icon: Icon, trend }) => {
   return (
-    <div className="bg-dark-surface p-6 border border-dark-border flex items-start justify-between transition-all duration-300 hover:border-dark-text/30 hover:shadow-lg hover:shadow-black/20 group relative overflow-hidden">
-       
-       {/* Corner Chevrons */}
-       <div className="absolute top-0 left-0 w-2 h-2 border-l-2 border-t-2 border-dark-border group-hover:border-neon-400 transition-colors"></div>
-       <div className="absolute top-0 right-0 w-2 h-2 border-r-2 border-t-2 border-dark-border group-hover:border-neon-400 transition-colors"></div>
-       <div className="absolute bottom-0 left-0 w-2 h-2 border-l-2 border-b-2 border-dark-border group-hover:border-neon-400 transition-colors"></div>
-       <div className="absolute bottom-0 right-0 w-2 h-2 border-r-2 border-b-2 border-dark-border group-hover:border-neon-400 transition-colors"></div>
-
-       {/* Background glow effect on hover */}
-       <div className="absolute inset-0 bg-gradient-to-br from-neon-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
-       
-      <div className="relative z-10">
-        <div className="flex items-center gap-2 mb-3">
-            <div className={`p-2 bg-dark-bg border border-dark-border ${color}`}>
-                <Icon size={18} />
-            </div>
-            <p className="text-dark-text text-xs font-normal uppercase tracking-wide">{label}</p>
+    <div className="bg-apple-surface p-6 rounded-2xl shadow-soft border border-white hover:shadow-hover transition-all duration-300 flex flex-col justify-between h-32 group">
+      <div className="flex items-start justify-between">
+        <div>
+           <p className="text-apple-gray text-xs font-semibold uppercase tracking-wide mb-1">{label}</p>
+           <h3 className="text-3xl font-semibold text-apple-text tracking-tight -ml-0.5">{value}</h3>
         </div>
-        <h3 className="text-3xl font-semibold text-dark-heading tracking-tight">{value}</h3>
-        {trend && (
-          <p className="text-xs text-dark-text/70 mt-2 font-normal">
+        <div className="p-2 bg-gray-50 rounded-full text-apple-gray group-hover:text-apple-blue group-hover:bg-blue-50 transition-colors">
+            <Icon size={20} />
+        </div>
+      </div>
+      
+      {trend && (
+        <div className="mt-auto">
+          <p className="text-xs text-apple-gray font-medium">
             {trend}
           </p>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };

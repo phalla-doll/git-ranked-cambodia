@@ -13,7 +13,8 @@ import {
   Activity,
   Cpu,
   LayoutDashboard,
-  Trophy
+  Trophy,
+  ArrowRight
 } from 'lucide-react';
 import { 
   BarChart, 
@@ -31,10 +32,6 @@ import { StatCard } from './components/StatCard';
 import { LeaderboardTable } from './components/LeaderboardTable';
 import { UserModal } from './components/UserModal';
 import { POPULAR_LOCATIONS } from './data/locations';
-
-function escapeRegExp(string: string) {
-  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
 
 function App() {
   const [location, setLocation] = useState('Cambodia');
@@ -189,72 +186,69 @@ function App() {
   }));
 
   return (
-    <div className="min-h-screen font-sans text-dark-text bg-dark-bg selection:bg-neon-500 selection:text-white">
+    <div className="min-h-screen font-sans text-apple-text bg-apple-bg selection:bg-apple-blue selection:text-white">
       
       {/* Rate Limit Banner */}
       {rateLimitHit && (
-        <div className="bg-red-500/10 border-b border-red-500/20 backdrop-blur-md relative z-50">
+        <div className="bg-orange-50 border-b border-orange-100 relative z-50">
            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <AlertCircle size={16} className="text-red-400" />
-                <span className="text-xs font-normal text-red-200">
+                <AlertCircle size={16} className="text-orange-500" />
+                <span className="text-xs font-medium text-orange-800">
                   Rate limit reached. Showing cached data.
                 </span>
               </div>
               <button 
                 onClick={() => setShowKeyInput(true)}
-                className="text-[10px] font-semibold bg-red-500/20 hover:bg-red-500/30 text-red-100 px-3 py-1 transition-colors"
+                className="text-[10px] font-semibold text-orange-700 bg-white border border-orange-200 px-3 py-1 rounded-full hover:bg-orange-50 transition-colors"
               >
-                FIX NOW
+                Add Key
               </button>
            </div>
         </div>
       )}
 
       {/* Navbar */}
-      <nav className="border-b border-dark-border bg-dark-bg/80 backdrop-blur-xl sticky top-0 z-40">
+      <nav className="glass-panel sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-18 items-center py-3">
+          <div className="flex justify-between h-16 items-center">
             <div className="flex items-center gap-3">
-               <div className="w-10 h-10 bg-gradient-to-br from-neon-400 to-neon-500 flex items-center justify-center shadow-lg shadow-neon-500/20">
+               <div className="w-9 h-9 bg-black rounded-xl flex items-center justify-center shadow-lg shadow-black/10">
                   <Terminal className="text-white h-5 w-5" />
                </div>
                <div className="flex flex-col">
-                  <span className="font-semibold text-lg text-white leading-none">
+                  <span className="font-bold text-lg text-apple-text leading-none tracking-tight">
                     GitRanked
-                  </span>
-                  <span className="text-[10px] font-normal text-dark-text mt-1">
-                    Developer Insights
                   </span>
                </div>
             </div>
             
             <div className="flex items-center gap-3">
               {/* User Search Input */}
-              <div className="hidden md:flex items-center gap-2 bg-dark-surface border border-dark-border px-4 py-2 focus-within:border-neon-500/50 focus-within:ring-1 focus-within:ring-neon-500/20 transition-all w-64">
-                <Search size={14} className="text-dark-text" />
+              <div className="hidden md:flex items-center gap-2 bg-gray-100 rounded-full px-4 py-2 focus-within:ring-2 focus-within:ring-apple-blue/20 transition-all w-64">
+                <Search size={16} className="text-gray-400" />
                 <input 
                   type="text"
-                  placeholder="Search user..."
-                  className="bg-transparent border-none focus:outline-none text-sm w-full text-white placeholder-dark-text/50 font-normal"
+                  placeholder="Find user..."
+                  className="bg-transparent border-none focus:outline-none text-sm w-full text-apple-text placeholder-gray-400 font-medium"
                   value={userSearchQuery}
                   onChange={(e) => setUserSearchQuery(e.target.value)}
                   onKeyDown={handleUserSearchKeyDown}
                   disabled={isSearchingUser}
                 />
-                {isSearchingUser && <Loader2 size={14} className="text-neon-400 animate-spin" />}
+                {isSearchingUser && <Loader2 size={14} className="text-apple-blue animate-spin" />}
               </div>
 
               <button 
                 onClick={() => setShowKeyInput(!showKeyInput)}
-                className={`p-2 border transition-all ${
+                className={`p-2 rounded-full transition-all ${
                   apiKey 
-                  ? 'border-neon-500/30 text-neon-400 bg-neon-500/10' 
-                  : 'border-dark-border text-dark-text hover:text-white hover:bg-dark-surface'
+                  ? 'text-apple-blue bg-blue-50' 
+                  : 'text-gray-500 hover:bg-gray-100'
                 }`}
                 title="API Settings"
               >
-                <Key size={18} />
+                <Key size={20} />
               </button>
             </div>
           </div>
@@ -263,23 +257,23 @@ function App() {
 
       {/* API Key Modal Overlay */}
       {showKeyInput && (
-        <div className="absolute top-16 right-0 left-0 z-30 bg-dark-surface/95 border-b border-dark-border backdrop-blur-md animate-in slide-in-from-top-2">
+        <div className="absolute top-16 right-0 left-0 z-30 bg-white/90 border-b border-gray-200 backdrop-blur-xl animate-in slide-in-from-top-2 shadow-lg">
            <div className="max-w-7xl mx-auto p-6 flex flex-col md:flex-row items-center gap-4 justify-between">
-             <div className="text-sm text-dark-text">
-               <p className="text-white font-medium mb-1">Github Access Token</p>
-               <p className="opacity-70">Add a token to increase rate limits from 60 to 5,000 requests/hr.</p>
+             <div className="text-sm text-apple-text">
+               <p className="font-semibold mb-1">GitHub Access Token</p>
+               <p className="text-gray-500">Add a token to increase API rate limits.</p>
              </div>
              <div className="flex w-full md:w-auto gap-2">
                <input 
                   type="password" 
-                  placeholder="Paste ghp_... token here" 
+                  placeholder="ghp_..." 
                   value={apiKey}
                   onChange={(e) => setApiKey(e.target.value)}
-                  className="bg-dark-bg border border-dark-border px-4 py-2 text-sm w-full md:w-80 focus:outline-none focus:border-neon-500 text-white font-normal"
+                  className="bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 text-sm w-full md:w-80 focus:outline-none focus:border-apple-blue focus:ring-1 focus:ring-apple-blue transition-all"
                />
                <button 
                  onClick={handleSaveApiKey}
-                 className="bg-neon-500 hover:bg-neon-400 text-white px-6 py-2 text-sm font-medium transition-colors"
+                 className="bg-black hover:bg-gray-800 text-white rounded-lg px-6 py-2 text-sm font-medium transition-colors"
                >
                  Save
                </button>
@@ -288,20 +282,20 @@ function App() {
         </div>
       )}
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
         
         {/* Controls Section */}
-        <div className="flex flex-col md:flex-row gap-6 justify-between items-end">
-          <div className="w-full md:max-w-md">
-             <label className="text-xs font-medium text-dark-text uppercase mb-2 block ml-1">Location Scope</label>
+        <div className="flex flex-col md:flex-row gap-8 justify-between items-end">
+          <div className="w-full md:max-w-lg">
+             <h1 className="text-3xl font-bold tracking-tight mb-6">Developer Rankings</h1>
              <form onSubmit={handleSearch} className="relative group" ref={inputWrapperRef}>
-                <div className="relative">
+                <div className="relative shadow-soft rounded-2xl">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <MapPin className="h-5 w-5 text-neon-400" />
+                    <MapPin className="h-5 w-5 text-gray-400" />
                   </div>
                   <input
                     type="text"
-                    className="block w-full pl-12 pr-4 py-3.5 bg-dark-surface border border-dark-border text-white placeholder-dark-text focus:outline-none focus:border-neon-500 focus:ring-1 focus:ring-neon-500/20 transition-all font-normal text-lg shadow-sm"
+                    className="block w-full pl-12 pr-4 py-4 bg-white rounded-2xl border-0 ring-1 ring-gray-200 text-apple-text placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-apple-blue/50 transition-all font-medium text-lg"
                     placeholder="Enter location..."
                     value={location}
                     onChange={handleLocationChange}
@@ -310,9 +304,9 @@ function App() {
                     }}
                     autoComplete="off"
                   />
-                  <div className="absolute inset-y-1.5 right-1.5">
-                    <button type="submit" className="h-full px-5 bg-neon-500 hover:bg-neon-400 text-white text-sm font-medium transition-colors shadow-lg shadow-neon-500/20">
-                      Update
+                  <div className="absolute inset-y-2 right-2">
+                    <button type="submit" className="h-full px-6 bg-apple-blue hover:bg-apple-blueHover text-white rounded-xl text-sm font-medium transition-colors shadow-lg shadow-blue-500/20">
+                      Search
                     </button>
                   </div>
                 </div>
@@ -321,13 +315,13 @@ function App() {
                 {showSuggestions && suggestions.length > 0 && (
                   <ul 
                     ref={suggestionsRef}
-                    className="absolute top-full left-0 right-0 mt-2 bg-dark-surface border border-dark-border shadow-2xl z-50 max-h-60 overflow-y-auto custom-scrollbar"
+                    className="absolute top-full left-0 right-0 mt-3 bg-white rounded-2xl shadow-hover border border-gray-100 z-50 max-h-60 overflow-y-auto py-2"
                   >
                     {suggestions.map((suggestion, index) => (
                       <li 
                         key={index}
                         onClick={() => handleSelectSuggestion(suggestion)}
-                        className="px-5 py-3 text-sm text-dark-text hover:bg-dark-hover hover:text-white cursor-pointer transition-colors border-b border-dark-border/50 last:border-0"
+                        className="px-5 py-3 text-sm text-gray-600 hover:bg-gray-50 hover:text-black cursor-pointer transition-colors"
                       >
                          {suggestion}
                       </li>
@@ -337,7 +331,8 @@ function App() {
              </form>
           </div>
 
-          <div className="flex bg-dark-surface p-1 border border-dark-border overflow-x-auto">
+          {/* Pill Tabs */}
+          <div className="flex bg-gray-100/80 p-1.5 rounded-full">
              {[
                { id: SortOption.FOLLOWERS, label: 'Followers' },
                { id: SortOption.CONTRIBUTIONS, label: 'Contributions' },
@@ -347,10 +342,10 @@ function App() {
                 <button
                   key={option.id}
                   onClick={() => setSortBy(option.id)}
-                  className={`px-4 py-2 text-xs font-medium transition-all whitespace-nowrap ${
+                  className={`px-5 py-2 text-xs font-semibold rounded-full transition-all whitespace-nowrap ${
                     sortBy === option.id 
-                      ? 'bg-neon-500 text-white shadow-md' 
-                      : 'text-dark-text hover:text-white hover:bg-dark-bg'
+                      ? 'bg-white text-black shadow-sm' 
+                      : 'text-gray-500 hover:text-gray-900'
                   }`}
                 >
                   {option.label}
@@ -362,85 +357,79 @@ function App() {
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <StatCard 
-            label="Developers Found" 
-            value={totalCount > 0 ? (totalCount > 1000 ? '1K+' : totalCount) : 0} 
+            label="Total Developers" 
+            value={totalCount > 0 ? (totalCount > 1000 ? `${(totalCount/1000).toFixed(1)}K+` : totalCount) : 0} 
             icon={Users} 
-            color="text-neon-400 bg-neon-400/10 border-neon-400/20"
           />
           <StatCard 
             label="Top Influence" 
             value={topUser ? topUser.followers.toLocaleString() : '-'} 
             icon={Activity}
-            trend={topUser ? `Lead: ${topUser.login}` : ''}
-            color="text-blue-400 bg-blue-400/10 border-blue-400/20"
+            trend={topUser ? topUser.login : ''}
           />
           <StatCard 
-            label="Code Volume" 
+            label="Total Repositories" 
             value={totalRepos.toLocaleString()} 
             icon={GitBranch} 
-            color="text-purple-400 bg-purple-400/10 border-purple-400/20"
           />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Leaderboard */}
-          <div className="lg:col-span-2 space-y-5">
+          <div className="lg:col-span-2 space-y-4">
              <div className="flex items-center justify-between px-1">
-                <h2 className="text-lg font-medium text-white flex items-center gap-2">
-                  <Trophy className="text-neon-400" size={18} />
-                  Top Ranked
-                </h2>
-                <div className="flex items-center gap-2 px-3 py-1 bg-neon-500/10 border border-neon-500/20">
-                   <div className="w-1.5 h-1.5 bg-neon-500 animate-pulse"></div>
-                   <span className="text-[10px] font-semibold text-neon-400 uppercase tracking-wide">Live Data</span>
-                </div>
+                <h2 className="text-lg font-bold text-apple-text">Top Profiles</h2>
              </div>
              <LeaderboardTable users={users} sortBy={sortBy} loading={loading} error={error} />
+             
+             {/* Self-check prompt */}
+             <div className="bg-blue-50 rounded-2xl p-6 flex items-center justify-between mt-4 border border-blue-100">
+                <div>
+                  <h4 className="font-semibold text-apple-blue mb-1">Are you a developer in {location}?</h4>
+                  <p className="text-sm text-blue-800/70 max-w-sm">
+                    If you don't see yourself here, try searching for your username directly in the top bar to verify your stats.
+                  </p>
+                </div>
+                <div className="hidden sm:block p-3 bg-white rounded-full text-apple-blue shadow-sm">
+                   <ArrowRight size={20} />
+                </div>
+             </div>
           </div>
 
           {/* Sidebar / Charts */}
           <div className="space-y-6">
-            <div className="bg-dark-surface border border-dark-border p-6 shadow-xl relative">
-              {/* Chart Corner Chevrons */}
-              <div className="absolute top-0 left-0 w-2 h-2 border-l-2 border-t-2 border-dark-text/30"></div>
-              <div className="absolute top-0 right-0 w-2 h-2 border-r-2 border-t-2 border-dark-text/30"></div>
-              <div className="absolute bottom-0 left-0 w-2 h-2 border-l-2 border-b-2 border-dark-text/30"></div>
-              <div className="absolute bottom-0 right-0 w-2 h-2 border-r-2 border-b-2 border-dark-text/30"></div>
-
-              <h3 className="text-sm font-medium text-white mb-6 flex items-center justify-between">
-                <span>Distribution</span>
-                <span className="text-xs text-dark-text font-normal">Top 7</span>
-              </h3>
+            <div className="bg-white rounded-3xl p-6 shadow-soft border border-gray-100">
+              <h3 className="text-sm font-semibold text-apple-text mb-6">Follower Distribution</h3>
               <div className="h-64 w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={chartData} layout="vertical" margin={{ left: 0, right: 30, top: 0, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#21262d" />
+                    <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#f0f0f0" />
                     <XAxis type="number" hide />
                     <YAxis 
                       dataKey="name" 
                       type="category" 
                       width={80} 
-                      tick={{fill: '#8b949e', fontSize: 11, fontWeight: 500}} 
+                      tick={{fill: '#86868b', fontSize: 11, fontWeight: 500}} 
                       axisLine={false}
                       tickLine={false}
                     />
                     <Tooltip 
-                      cursor={{fill: '#21262d', opacity: 0.4}}
+                      cursor={{fill: '#f5f5f7'}}
                       contentStyle={{ 
-                        borderRadius: '0px', 
-                        border: '1px solid #30363d', 
-                        backgroundColor: '#161b22',
-                        color: '#f0f6fc',
+                        borderRadius: '12px', 
+                        border: 'none', 
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                        backgroundColor: '#fff',
+                        color: '#1d1d1f',
                       }}
-                      itemStyle={{ color: '#2effa3' }}
                     />
                     <Bar 
                       dataKey="followers" 
-                      radius={[0, 0, 0, 0]} 
-                      barSize={20}
+                      radius={[0, 4, 4, 0]} 
+                      barSize={16}
                     >
                       {chartData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={index === 0 ? '#00d084' : '#238636'} />
+                        <Cell key={`cell-${index}`} fill={index === 0 ? '#0071e3' : '#9bbbe3'} />
                       ))}
                     </Bar>
                   </BarChart>
@@ -448,23 +437,17 @@ function App() {
               </div>
             </div>
 
-            <div className="border border-dark-border p-6 relative overflow-hidden group bg-gradient-to-br from-dark-surface to-dark-bg">
-               {/* Intel Card Corner Chevrons */}
-               <div className="absolute top-0 left-0 w-3 h-3 border-l-2 border-t-2 border-neon-500"></div>
-               <div className="absolute top-0 right-0 w-3 h-3 border-r-2 border-t-2 border-neon-500"></div>
-               <div className="absolute bottom-0 left-0 w-3 h-3 border-l-2 border-b-2 border-neon-500"></div>
-               <div className="absolute bottom-0 right-0 w-3 h-3 border-r-2 border-b-2 border-neon-500"></div>
-
-               <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-1 transition-opacity">
-                 <Cpu size={120} />
+            <div className="bg-gradient-to-br from-gray-900 to-black rounded-3xl p-8 text-white relative overflow-hidden shadow-xl">
+               <div className="absolute top-0 right-0 p-8 opacity-10">
+                 <Cpu size={100} />
                </div>
-               <h3 className="text-sm font-medium text-white mb-2 relative z-10">Ranking Logic</h3>
-               <p className="text-dark-text text-xs leading-relaxed relative z-10 mb-4 font-normal">
-                 Our ranking algorithm prioritizes community engagement (Followers) and public output (Repositories) as key signals of developer influence.
+               <h3 className="text-sm font-semibold text-white mb-2 relative z-10">Ranking Algorithm</h3>
+               <p className="text-gray-400 text-xs leading-relaxed relative z-10 mb-6">
+                 We analyze public data points including follower count, repository volume, and contribution history to determine developer influence scores.
                </p>
-               <div className="inline-flex items-center gap-2 text-[10px] font-semibold text-neon-400 bg-neon-500/10 px-3 py-1.5 border border-neon-500/20">
+               <div className="inline-flex items-center gap-2 text-[10px] font-bold tracking-wide uppercase text-white bg-white/20 backdrop-blur-md px-3 py-1.5 rounded-full">
                   <Activity size={12} />
-                  <span>ALGORITHM V2.1 ACTIVE</span>
+                  <span>Version 2.1</span>
                </div>
             </div>
           </div>

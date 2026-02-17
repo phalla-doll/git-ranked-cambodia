@@ -1,6 +1,6 @@
 import React from 'react';
 import { GitHubUserDetail, SortOption } from '../types';
-import { ExternalLink, Activity, AlertTriangle, SearchX, MapPin, Building, Trophy, Medal } from 'lucide-react';
+import { ExternalLink, Activity, AlertTriangle, SearchX, Trophy, Medal } from 'lucide-react';
 import { UserProfileStats } from './UserProfileStats';
 
 interface LeaderboardTableProps {
@@ -11,22 +11,22 @@ interface LeaderboardTableProps {
 }
 
 const RankBadge = ({ rank }: { rank: number }) => {
-  let color = "bg-dark-surface text-dark-text border-dark-border";
+  let colorClass = "bg-gray-100 text-gray-500 border-gray-200";
   let icon = null;
 
   if (rank === 1) {
-    color = "bg-yellow-500/10 text-yellow-500 border-yellow-500/20 shadow-[0_0_10px_rgba(234,179,8,0.2)]";
-    icon = <Trophy size={10} className="mr-1" />;
+    colorClass = "bg-yellow-100 text-yellow-700 border-yellow-200";
+    icon = <Trophy size={12} className="mr-1" />;
   } else if (rank === 2) {
-    color = "bg-slate-300/10 text-slate-300 border-slate-300/20";
-    icon = <Medal size={10} className="mr-1" />;
+    colorClass = "bg-gray-100 text-gray-600 border-gray-300";
+    icon = <Medal size={12} className="mr-1" />;
   } else if (rank === 3) {
-    color = "bg-amber-700/10 text-amber-600 border-amber-700/20";
-    icon = <Medal size={10} className="mr-1" />;
+    colorClass = "bg-orange-50 text-orange-700 border-orange-200";
+    icon = <Medal size={12} className="mr-1" />;
   }
 
   return (
-    <div className={`flex items-center px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider border rounded-full ${color}`}>
+    <div className={`flex items-center px-2.5 py-1 text-[11px] font-semibold border rounded-full ${colorClass}`}>
       {icon}
       #{rank}
     </div>
@@ -38,22 +38,13 @@ export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({ users, sortB
   // Loading State
   if (loading && users.length === 0) {
     return (
-      <div className="bg-dark-surface border border-dark-border flex flex-col items-center justify-center min-h-[400px] relative overflow-hidden group">
-        <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(63,185,80,0.05)_50%,transparent_75%,transparent_100%)] bg-[length:250%_250%] animate-[shimmer_2s_linear_infinite]"></div>
-        <div className="absolute top-0 left-0 w-3 h-3 border-l-2 border-t-2 border-dark-border group-hover:border-neon-400 transition-colors"></div>
-        <div className="absolute top-0 right-0 w-3 h-3 border-r-2 border-t-2 border-dark-border group-hover:border-neon-400 transition-colors"></div>
-        <div className="absolute bottom-0 left-0 w-3 h-3 border-l-2 border-b-2 border-dark-border group-hover:border-neon-400 transition-colors"></div>
-        <div className="absolute bottom-0 right-0 w-3 h-3 border-r-2 border-b-2 border-dark-border group-hover:border-neon-400 transition-colors"></div>
-        
-        <div className="relative z-10 flex flex-col items-center">
-          <div className="w-16 h-16 bg-dark-bg rounded-full flex items-center justify-center border border-dark-border mb-6 relative">
-             <div className="absolute inset-0 rounded-full border-2 border-neon-500/20 border-t-neon-500 animate-spin"></div>
-             <Activity className="text-neon-400" size={24} />
+      <div className="bg-white rounded-2xl border border-gray-100 flex flex-col items-center justify-center min-h-[400px]">
+        <div className="flex flex-col items-center animate-pulse">
+          <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+             <Activity className="text-gray-400" size={20} />
           </div>
-          <p className="text-white font-medium text-lg tracking-tight">Scanning GitHub Registry...</p>
-          <p className="text-dark-text text-xs mt-2 font-mono text-center max-w-xs">
-            Fetching developer profiles and analyzing public metrics.
-          </p>
+          <p className="text-apple-text font-medium text-lg">Loading profiles...</p>
+          <p className="text-apple-gray text-sm mt-1">Analyzing GitHub data.</p>
         </div>
       </div>
     );
@@ -62,20 +53,12 @@ export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({ users, sortB
   // Error State
   if (error) {
     return (
-      <div className="bg-dark-surface border border-red-500/20 flex flex-col items-center justify-center min-h-[400px] relative overflow-hidden">
-        <div className="absolute inset-0 bg-red-500/5"></div>
-        <div className="relative z-10 flex flex-col items-center text-center px-6">
-            <div className="w-16 h-16 bg-dark-bg rounded-full flex items-center justify-center border border-red-500/30 mb-6 shadow-[0_0_20px_rgba(239,68,68,0.2)]">
-                <AlertTriangle className="text-red-500" size={32} />
-            </div>
-            <h3 className="text-white font-semibold text-xl mb-2">Connection Interrupted</h3>
-            <p className="text-red-200/70 text-sm max-w-md mb-6 border border-red-500/20 bg-dark-bg p-3 font-mono rounded">
-               {error}
-            </p>
-            <p className="text-dark-text text-sm max-w-sm">
-               We couldn't retrieve the latest data. Please check your internet connection or API settings.
-            </p>
+      <div className="bg-white rounded-2xl border border-red-100 flex flex-col items-center justify-center min-h-[400px]">
+        <div className="w-12 h-12 bg-red-50 rounded-full flex items-center justify-center mb-4">
+            <AlertTriangle className="text-red-500" size={20} />
         </div>
+        <h3 className="text-apple-text font-semibold text-lg">Connection Issue</h3>
+        <p className="text-apple-gray text-sm text-center max-w-xs mt-2">{error}</p>
       </div>
     );
   }
@@ -83,69 +66,67 @@ export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({ users, sortB
   // Empty State
   if (users.length === 0) {
     return (
-      <div className="bg-dark-surface border border-dark-border flex flex-col items-center justify-center min-h-[400px] relative">
-        <div className="w-20 h-20 bg-dark-bg flex items-center justify-center mb-6 border border-dark-border shadow-inner">
-            <SearchX size={40} className="text-dark-text opacity-50" />
+      <div className="bg-white rounded-2xl border border-gray-100 flex flex-col items-center justify-center min-h-[400px]">
+        <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">
+            <SearchX size={32} className="text-gray-300" />
         </div>
-        <h3 className="text-white font-medium text-xl">No Developers Found</h3>
-        <p className="text-dark-text mt-2 max-w-sm text-center text-sm">
-          We couldn't find any public profiles matching your location filter. Try broadening your search terms.
+        <h3 className="text-apple-text font-medium text-lg">No Developers Found</h3>
+        <p className="text-apple-gray mt-2 max-w-sm text-center text-sm">
+          Try adjusting your location or search terms.
         </p>
       </div>
     );
   }
 
-  // 1-Column List Layout
+  // List Layout
   return (
-    <div className="flex flex-col gap-3 relative min-h-[500px]">
+    <div className="flex flex-col gap-4 relative min-h-[500px]">
       {users.map((user, index) => (
         <div 
           key={user.id} 
-          className="group relative bg-dark-surface border border-dark-border hover:border-dark-text/30 transition-all shadow-sm hover:shadow-lg hover:shadow-black/20 overflow-hidden flex flex-col"
+          className="group relative bg-white rounded-2xl border border-white shadow-soft hover:shadow-hover transition-all duration-300 overflow-hidden flex flex-col"
         >
-             {/* Hover Glow */}
-             <div className="absolute inset-0 bg-gradient-to-br from-neon-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
-
              {/* Top Section */}
-             <div className="p-4 sm:p-5 flex-1 relative z-10">
-                <div className="flex justify-between items-start mb-3 sm:mb-4">
-                    <div className="flex items-start gap-3 sm:gap-4">
+             <div className="p-5 flex-1 relative z-10">
+                <div className="flex justify-between items-start mb-4">
+                    <div className="flex items-center gap-4">
                         {/* Avatar */}
                         <div className="relative shrink-0">
                            <img 
                               src={user.avatar_url} 
                               alt={user.login} 
-                              className="w-12 h-12 sm:w-14 sm:h-14 rounded-sm border border-dark-border bg-dark-bg object-cover shadow-sm group-hover:border-neon-500/50 transition-colors"
+                              className="w-14 h-14 rounded-full border border-gray-100 bg-gray-50 object-cover shadow-sm"
                               loading="lazy"
                            />
                            {index < 3 && (
-                               <div className="absolute -top-1 -right-1 w-3 h-3 bg-neon-500 rounded-full border-2 border-dark-surface"></div>
+                               <div className="absolute -top-1 -right-1 w-4 h-4 bg-white rounded-full flex items-center justify-center shadow-sm">
+                                  <div className={`w-2 h-2 rounded-full ${index === 0 ? 'bg-yellow-500' : index === 1 ? 'bg-gray-400' : 'bg-orange-500'}`}></div>
+                                </div>
                            )}
                         </div>
                         
                         {/* Name Block */}
-                        <div className="min-w-0 flex flex-col justify-center pt-0.5">
-                            <div className="flex items-center gap-2 mb-0.5">
-                                <h3 className="font-bold text-white text-base sm:text-lg truncate max-w-[150px] sm:max-w-[300px] group-hover:text-neon-400 transition-colors">
-                                    {user.name || user.login}
-                                </h3>
-                            </div>
-                            <div className="flex items-center gap-3">
+                        <div className="min-w-0 flex flex-col">
+                            <h3 className="font-semibold text-apple-text text-lg truncate group-hover:text-apple-blue transition-colors">
+                                {user.name || user.login}
+                            </h3>
+                            <div className="flex items-center gap-2 mt-0.5">
                               <a 
                                  href={user.html_url} 
                                  target="_blank" 
                                  rel="noopener noreferrer"
-                                 className="text-xs text-dark-text hover:text-white font-mono flex items-center gap-1"
+                                 className="text-sm text-apple-gray hover:text-apple-text transition-colors"
                               >
                                   @{user.login}
                               </a>
                               
-                              {/* Location / Company - Inline for 1-column layout to save vertical space */}
                               {(user.location || user.company) && (
-                                 <div className="hidden sm:flex items-center gap-2 text-[10px] text-dark-text/50">
-                                    <span className="w-1 h-1 rounded-full bg-dark-border"></span>
-                                    <span className="truncate max-w-[200px]">{user.company || user.location}</span>
-                                 </div>
+                                 <>
+                                 <span className="w-0.5 h-3 bg-gray-200"></span>
+                                 <span className="text-xs text-gray-400 truncate max-w-[200px]">
+                                   {user.company || user.location}
+                                 </span>
+                                 </>
                               )}
                             </div>
                         </div>
@@ -156,14 +137,14 @@ export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({ users, sortB
 
                 {/* Bio */}
                 {user.bio && (
-                  <div className="mb-3 sm:mb-0 text-sm text-dark-text/70 line-clamp-2 leading-relaxed max-w-2xl">
+                  <div className="text-sm text-gray-500 line-clamp-2 leading-relaxed max-w-3xl mb-1">
                       {user.bio}
                   </div>
                 )}
              </div>
 
              {/* Bottom Stats Section */}
-             <div className="mt-auto border-t border-dark-border bg-dark-bg/20 relative z-10">
+             <div className="mt-auto border-t border-gray-50 bg-gray-50/50">
                 <UserProfileStats user={user} sortBy={sortBy} flat={true} />
              </div>
              
@@ -172,20 +153,17 @@ export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({ users, sortB
                 href={user.html_url} 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                className="absolute top-5 right-5 text-dark-text opacity-0 group-hover:opacity-100 hover:text-white transition-all translate-x-2 group-hover:translate-x-0"
+                className="absolute top-5 right-5 p-2 bg-gray-50 rounded-full text-gray-400 opacity-0 group-hover:opacity-100 hover:text-apple-blue hover:bg-blue-50 transition-all transform scale-90 group-hover:scale-100"
              >
                  <ExternalLink size={16} />
              </a>
         </div>
       ))}
-
-      {loading && users.length > 0 && (
-          <div className="p-4 text-center text-dark-text text-xs bg-dark-surface border border-dark-border">
-             <div className="flex items-center justify-center gap-2">
-               <div className="animate-spin h-3 w-3 border-2 border-neon-400 border-t-transparent"></div>
-               <span>Loading more developers...</span>
-             </div>
-          </div>
+      
+      {loading && (
+        <div className="flex justify-center py-6">
+           <div className="w-6 h-6 border-2 border-gray-200 border-t-apple-blue rounded-full animate-spin"></div>
+        </div>
       )}
     </div>
   );
