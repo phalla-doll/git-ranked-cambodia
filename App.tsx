@@ -436,4 +436,35 @@ function App() {
                  <button
                     onClick={() => setPage(p => p + 1)}
                     disabled={users.length < 25 || loading}
-                    className="p-2 text-gray
+                    className="p-2 text-gray-400 hover:text-apple-text disabled:opacity-30 disabled:hover:text-gray-400 transition-colors"
+                 >
+                    <ChevronRight size={24} />
+                 </button>
+              </div>
+            )}
+            
+            {/* Self-check prompt */}
+            <div className="bg-blue-50 rounded-2xl p-6 flex items-center justify-between border border-blue-100 mt-6">
+              <div>
+                <h4 className="font-medium text-apple-blue mb-1">Are you a developer in {location}?</h4>
+                <p className="text-sm text-blue-800/70 max-w-sm">
+                  If you don't see yourself here, try searching for your username directly in the top bar to verify your stats.
+                </p>
+              </div>
+              <div className="hidden sm:block p-3 bg-white rounded-full text-apple-blue shadow-sm">
+                  <ArrowRight size={20} />
+              </div>
+            </div>
+        </div>
+
+        <UserModal 
+          user={modalUser} 
+          isOpen={isModalOpen} 
+          onClose={() => setIsModalOpen(false)} 
+        />
+      </main>
+    </div>
+  );
+}
+
+export default App;
