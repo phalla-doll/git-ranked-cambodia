@@ -12,7 +12,8 @@ import {
   ExternalLink,
   Activity,
   Cpu,
-  LayoutDashboard
+  LayoutDashboard,
+  Trophy
 } from 'lucide-react';
 import { 
   BarChart, 
@@ -215,7 +216,7 @@ function App() {
                     GitRanked
                   </span>
                   <span className="text-[10px] font-medium text-dark-text mt-1">
-                    Market Intelligence
+                    Developer Insights
                   </span>
                </div>
             </div>
@@ -378,8 +379,8 @@ function App() {
           <div className="lg:col-span-2 space-y-5">
              <div className="flex items-center justify-between px-1">
                 <h2 className="text-lg font-semibold text-white flex items-center gap-2">
-                  <LayoutDashboard className="text-neon-400" size={18} />
-                  Market Leaders
+                  <Trophy className="text-neon-400" size={18} />
+                  Top Ranked
                 </h2>
                 <div className="flex items-center gap-2 px-3 py-1 bg-neon-500/10 border border-neon-500/20">
                    <div className="w-1.5 h-1.5 bg-neon-500 animate-pulse"></div>
@@ -449,7 +450,7 @@ function App() {
                <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
                  <Cpu size={120} />
                </div>
-               <h3 className="text-sm font-semibold text-white mb-2 relative z-10">Data Intelligence</h3>
+               <h3 className="text-sm font-semibold text-white mb-2 relative z-10">Ranking Logic</h3>
                <p className="text-dark-text text-xs leading-relaxed relative z-10 mb-4">
                  Our ranking algorithm prioritizes community engagement (Followers) and public output (Repositories) as key signals of developer influence.
                </p>
