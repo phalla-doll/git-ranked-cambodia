@@ -165,7 +165,7 @@ export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({ users, sortB
 
                   <td className="px-6 py-4 text-right hidden lg:table-cell">
                     <div className="flex flex-col items-end">
-                      <span className={`font-medium ${sortBy === SortOption.CONTRIBUTIONS ? 'text-apple-blue' : 'text-gray-700'}`}>
+                      <span className="font-medium text-gray-700">
                          {user.recent_activity_count !== undefined ? user.recent_activity_count.toLocaleString() : '-'}
                       </span>
                     </div>

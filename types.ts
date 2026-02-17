@@ -35,8 +35,7 @@ export interface SearchResponse {
 export enum SortOption {
   FOLLOWERS = 'followers',
   REPOS = 'repositories',
-  JOINED = 'joined',
-  CONTRIBUTIONS = 'contributions' // Custom sort based on events
+  JOINED = 'joined'
 }
 
 export interface AppState {

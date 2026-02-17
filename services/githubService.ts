@@ -329,29 +329,13 @@ export const searchUsersInLocation = async (
   }
   
   try {
-    let q = `location:${location} type:user`;
+    const q = `location:${location} type:user`;
     
-    // FEATURE: Filter by 'pushed' date when sorting by contributions.
-    // This acts as a proxy for "Active Users" since we cannot sort by contribution count directly.
-    // We filter for users who have pushed code in the last year.
-    if (sort === SortOption.CONTRIBUTIONS) {
-        const oneYearAgo = new Date();
-        oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
-        const dateStr = oneYearAgo.toISOString().split('T')[0];
-        q += ` pushed:>${dateStr}`;
-    }
-    
-    // FIX: Using 'repositories' to find top contributors excludes users with high contributions but fewer repos.
-    // 'followers' is a much better proxy for active/popular developers.
-    const apiSort = sort === SortOption.CONTRIBUTIONS ? 'followers' : sort;
-    
-    // FIX: To find top contributors who might not be in the top 25 by followers, 
-    // we fetch a larger pool (100) if a key is present, then sort locally.
-    // Without a key, we limit to 30 to avoid hitting the 60 req/hr limit during hydration.
-    const fetchSize = (sort === SortOption.CONTRIBUTIONS && apiKey) ? 100 : 30;
+    // Limit to 30 to avoid hitting the 60 req/hr limit during hydration
+    const fetchSize = 30;
     
     // 1. Get the list of users via REST Search
-    const searchUrl = `${BASE_URL}/search/users?q=${encodeURIComponent(q)}&sort=${apiSort}&order=desc&per_page=${fetchSize}&page=${page}`;
+    const searchUrl = `${BASE_URL}/search/users?q=${encodeURIComponent(q)}&sort=${sort}&order=desc&per_page=${fetchSize}&page=${page}`;
     
     const searchRes = await fetch(searchUrl, { headers });
 
@@ -362,9 +346,7 @@ export const searchUsersInLocation = async (
              await new Promise(resolve => setTimeout(resolve, 800));
              
              let mockUsers = [...MOCK_USERS_CAMBODIA];
-             if (sort === SortOption.CONTRIBUTIONS) {
-                 mockUsers.sort((a, b) => (b.recent_activity_count || 0) - (a.recent_activity_count || 0));
-             } else if (sort === SortOption.FOLLOWERS) {
+             if (sort === SortOption.FOLLOWERS) {
                  mockUsers.sort((a, b) => b.followers - a.followers);
              } else if (sort === SortOption.REPOS) {
                  mockUsers.sort((a, b) => b.public_repos - a.public_repos);
@@ -397,7 +379,6 @@ export const searchUsersInLocation = async (
          const usersMap = await fetchGraphQLUserDetails(usernames, apiKey);
          
          // IMPORTANT: Map back to the original `usernames` array to maintain the sort order from the Search API
-         // unless we are re-sorting later
          detailedUsers = usernames
             .map(login => usersMap[login.toLowerCase()] || null)
             .filter((u): u is GitHubUserDetail => u !== null);
@@ -427,13 +408,7 @@ export const searchUsersInLocation = async (
         return { users: MOCK_USERS_CAMBODIA.slice(0, 25), total_count: 500, rateLimited: true };
     }
 
-    // Sort locally based on the fetched high-fidelity data if we have it
-    if (sort === SortOption.CONTRIBUTIONS) {
-        detailedUsers.sort((a, b) => (b.recent_activity_count || 0) - (a.recent_activity_count || 0));
-    }
-
     // Slice to standard page size (25) to ensure UI pagination logic remains consistent
-    // even if we fetched a larger pool for accuracy.
     const finalUsers = detailedUsers.slice(0, 25);
 
     return {

@@ -64,7 +64,6 @@ export const UserProfileStats: React.FC<UserProfileStatsProps> = ({ user, sortBy
         label="Contribs" 
         value={user.recent_activity_count !== undefined ? user.recent_activity_count : '-'} 
         icon={Calendar}
-        highlight={sortBy === SortOption.CONTRIBUTIONS} 
       />
     </div>
   );

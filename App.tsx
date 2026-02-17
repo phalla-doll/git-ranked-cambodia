@@ -187,14 +187,12 @@ function App() {
     switch (sortBy) {
       case SortOption.FOLLOWERS: return "Top Profiles by Followers";
       case SortOption.REPOS: return "Top Profiles by Repositories";
-      case SortOption.CONTRIBUTIONS: return "Top Profiles by Contributions";
       case SortOption.JOINED: return "Newest Members";
       default: return "Top Profiles";
     }
   };
 
   const getTotalLabel = () => {
-    if (sortBy === SortOption.CONTRIBUTIONS) return "Active Developers";
     return "Total Developers";
   };
 
@@ -398,7 +396,6 @@ function App() {
               <div className="flex overflow-x-auto custom-scrollbar bg-gray-200/50 p-1 rounded-xl w-full sm:w-auto">
                  {[
                    { id: SortOption.FOLLOWERS, label: 'Followers' },
-                   { id: SortOption.CONTRIBUTIONS, label: 'Contributions' },
                    { id: SortOption.REPOS, label: 'Repositories' },
                    { id: SortOption.JOINED, label: 'Newest' }
                  ].map((option) => (
