@@ -532,19 +532,19 @@ function App() {
         />
       </main>
 
-      <footer className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 mt-4 border-t border-gray-200/60">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-          <div className="text-center md:text-left">
-            <p className="text-sm font-medium text-gray-900">GitRanked Cambodia</p>
-            <p className="text-sm text-gray-500 mt-0.5">Community leaderboard for local developers.</p>
+      <footer className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 mt-8 border-t border-gray-200">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+          <div className="text-center md:text-left space-y-1">
+            <p className="text-lg font-semibold text-gray-900">GitRanked Cambodia</p>
+            <p className="text-base text-gray-500">Community leaderboard for local developers.</p>
           </div>
-          <div className="text-sm text-gray-500 flex items-center gap-1.5">
+          <div className="text-sm text-gray-600 flex flex-wrap justify-center items-center gap-2">
             <span>Created as a hobby and maintained by</span>
             <a 
               href="https://manthaa.dev/" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="font-medium text-gray-900 bg-gray-100 hover:underline"
+              className="font-semibold text-gray-900 bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-md transition-colors"
             >
               Mantha
             </a>
