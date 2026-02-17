@@ -9,7 +9,7 @@ interface StatCardProps {
   color?: string; // Kept for API compatibility, but usually ignored in minimal theme
 }
 
-export const StatCard: React.FC<StatCardProps> = ({ label, value, icon: Icon, trend }) => {
+export const StatCard: React.FC<StatCardProps> = ({ label, value, icon: Icon }) => {
   return (
     <div className="bg-apple-surface p-6 rounded-2xl shadow-soft border border-white hover:shadow-hover transition-all duration-300 flex flex-col justify-between h-32 group">
       <div className="flex items-start justify-between">
@@ -21,14 +21,6 @@ export const StatCard: React.FC<StatCardProps> = ({ label, value, icon: Icon, tr
             <Icon size={20} />
         </div>
       </div>
-      
-      {trend && (
-        <div className="mt-auto">
-          <p className="text-xs text-apple-gray font-normal">
-            {trend}
-          </p>
-        </div>
-      )}
     </div>
   );
 };

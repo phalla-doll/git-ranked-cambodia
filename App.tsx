@@ -25,6 +25,7 @@ import { searchUsersInLocation, getUserByName } from './services/githubService';
 import { StatCard } from './components/StatCard';
 import { LeaderboardTable } from './components/LeaderboardTable';
 import { UserModal } from './components/UserModal';
+import { TokenPromoModal } from './components/TokenPromoModal';
 import { POPULAR_LOCATIONS } from './data/locations';
 
 function App() {
@@ -59,6 +60,9 @@ function App() {
   const [modalUser, setModalUser] = useState<GitHubUserDetail | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // Token Promo Modal State
+  const [showPromoModal, setShowPromoModal] = useState(false);
+
   // Handle click outside to close suggestions
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -75,6 +79,28 @@ function App() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  // Check for promo modal display
+  useEffect(() => {
+    // If user already has a key, don't show logic
+    if (apiKey) return;
+
+    // Check local storage for dismissal
+    const hideUntil = localStorage.getItem('gitranked_promo_hide_until');
+    if (hideUntil) {
+      const hideUntilDate = parseInt(hideUntil, 10);
+      if (Date.now() < hideUntilDate) {
+        return;
+      }
+    }
+
+    // Delay for 2.5 seconds before showing
+    const timer = setTimeout(() => {
+      setShowPromoModal(true);
+    }, 2500);
+
+    return () => clearTimeout(timer);
+  }, [apiKey]);
 
   // Main search function
   const fetchUsers = useCallback(async (loc: string = location, p: number = 1) => {
@@ -181,6 +207,24 @@ function App() {
     setShowKeyInput(false);
     setPage(1);
     fetchUsers(location, 1);
+  };
+
+  // Logic to handle closing the Promo Modal
+  const handleClosePromo = (hideForToday: boolean) => {
+    setShowPromoModal(false);
+    if (hideForToday) {
+      // Set to hide for 24 hours
+      const tomorrow = Date.now() + 24 * 60 * 60 * 1000;
+      localStorage.setItem('gitranked_promo_hide_until', tomorrow.toString());
+    }
+  };
+
+  // Logic to handle saving key from Promo Modal
+  const handleSavePromoKey = (key: string) => {
+    setApiKey(key);
+    localStorage.setItem('gitranked_api_key', key);
+    setShowPromoModal(false);
+    // Trigger refresh implicitly via the useEffect dependence on apiKey
   };
 
   const getListTitle = () => {
@@ -467,6 +511,12 @@ function App() {
           user={modalUser} 
           isOpen={isModalOpen} 
           onClose={() => setIsModalOpen(false)} 
+        />
+
+        <TokenPromoModal 
+          isOpen={showPromoModal}
+          onClose={handleClosePromo}
+          onSave={handleSavePromoKey}
         />
       </main>
     </div>
