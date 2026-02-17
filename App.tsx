@@ -340,7 +340,7 @@ function App() {
           <div className="flex bg-dark-surface p-1 border border-dark-border overflow-x-auto">
              {[
                { id: SortOption.FOLLOWERS, label: 'Followers' },
-               { id: SortOption.CONTRIBUTIONS, label: 'Commits' },
+               { id: SortOption.CONTRIBUTIONS, label: 'Contributions' },
                { id: SortOption.REPOS, label: 'Repositories' },
                { id: SortOption.JOINED, label: 'Newest' }
              ].map((option) => (

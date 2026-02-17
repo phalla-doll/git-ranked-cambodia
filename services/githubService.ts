@@ -1,6 +1,7 @@
 import { GitHubUserDetail, GitHubUserSummary, SearchResponse, SortOption } from '../types';
 
 const BASE_URL = 'https://api.github.com';
+const GRAPHQL_URL = 'https://api.github.com/graphql';
 
 // Base mock data
 const BASE_MOCK_USERS: GitHubUserDetail[] = [
@@ -20,7 +21,7 @@ const BASE_MOCK_USERS: GitHubUserDetail[] = [
     followers: 1205,
     following: 110,
     created_at: "2018-01-15T10:20:30Z",
-    recent_activity_count: 342
+    recent_activity_count: 890
   },
   {
     login: "sopheak-dev",
@@ -38,7 +39,7 @@ const BASE_MOCK_USERS: GitHubUserDetail[] = [
     followers: 890,
     following: 45,
     created_at: "2019-05-10T08:00:00Z",
-    recent_activity_count: 156
+    recent_activity_count: 2400
   },
   {
     login: "vireak-codes",
@@ -74,7 +75,7 @@ const BASE_MOCK_USERS: GitHubUserDetail[] = [
     followers: 430,
     following: 12,
     created_at: "2016-11-02T09:30:00Z",
-    recent_activity_count: 45
+    recent_activity_count: 1500
   },
   {
     login: "bopha-design",
@@ -92,7 +93,7 @@ const BASE_MOCK_USERS: GitHubUserDetail[] = [
     followers: 340,
     following: 80,
     created_at: "2021-01-05T11:00:00Z",
-    recent_activity_count: 12
+    recent_activity_count: 350
   }
 ];
 
@@ -130,6 +131,7 @@ const generateMockUsers = (count: number): GitHubUserDetail[] => {
 
 const MOCK_USERS_CAMBODIA = generateMockUsers(50);
 
+// Fallback logic for REST API (when no token is provided)
 const calculateCommitsFromEvents = (events: any[]): number => {
     if (!Array.isArray(events)) return 0;
     return events.reduce((acc, event) => {
@@ -141,6 +143,103 @@ const calculateCommitsFromEvents = (events: any[]): number => {
     }, 0);
 };
 
+// --- GraphQL Helpers ---
+
+// Split array into chunks to avoid giant queries
+const chunkArray = (arr: any[], size: number) => {
+  const result = [];
+  for (let i = 0; i < arr.length; i += size) {
+    result.push(arr.slice(i, i + size));
+  }
+  return result;
+};
+
+// Fetch details for multiple users via GraphQL to save requests and get accurate contribution data
+const fetchGraphQLUserDetails = async (usernames: string[], token: string): Promise<Record<string, GitHubUserDetail>> => {
+  // We can't query too many at once due to complexity limits, but 20-25 should be safe for this specific query.
+  const chunks = chunkArray(usernames, 25);
+  let allUsers: Record<string, GitHubUserDetail> = {};
+
+  for (const chunk of chunks) {
+    const queries = chunk.map((username, index) => {
+      // Use clean alias by removing special chars from username for the key, but passing real login to func
+      const safeKey = `user_${index}`; 
+      return `
+        ${safeKey}: user(login: "${username}") {
+          login
+          databaseId
+          avatarUrl
+          url
+          name
+          company
+          websiteUrl
+          location
+          email
+          bio
+          createdAt
+          followers { totalCount }
+          following { totalCount }
+          repositories(privacy: PUBLIC) { totalCount }
+          gists(privacy: PUBLIC) { totalCount }
+          contributionsCollection {
+            contributionCalendar {
+              totalContributions
+            }
+          }
+        }
+      `;
+    }).join('\n');
+
+    const query = `query { ${queries} }`;
+
+    try {
+      const response = await fetch(GRAPHQL_URL, {
+        method: 'POST',
+        headers: {
+          'Authorization': `bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ query }),
+      });
+
+      const result = await response.json();
+      
+      if (result.data) {
+        chunk.forEach((username, index) => {
+           const safeKey = `user_${index}`;
+           const data = result.data[safeKey];
+           if (data) {
+             allUsers[username.toLowerCase()] = {
+               login: data.login,
+               id: data.databaseId,
+               avatar_url: data.avatarUrl,
+               html_url: data.url,
+               name: data.name,
+               company: data.company,
+               blog: data.websiteUrl,
+               location: data.location,
+               email: data.email,
+               bio: data.bio,
+               public_repos: data.repositories?.totalCount || 0,
+               public_gists: data.gists?.totalCount || 0,
+               followers: data.followers?.totalCount || 0,
+               following: data.following?.totalCount || 0,
+               created_at: data.createdAt,
+               recent_activity_count: data.contributionsCollection?.contributionCalendar?.totalContributions || 0
+             };
+           }
+        });
+      }
+    } catch (e) {
+      console.warn("GraphQL chunk fetch failed", e);
+    }
+  }
+
+  return allUsers;
+};
+
+// --- Main Service Functions ---
+
 export const getUserByName = async (username: string, apiKey?: string): Promise<GitHubUserDetail | null> => {
   const headers: HeadersInit = {
     'Accept': 'application/vnd.github.v3+json',
@@ -148,14 +247,25 @@ export const getUserByName = async (username: string, apiKey?: string): Promise<
 
   if (apiKey) {
     headers['Authorization'] = `token ${apiKey}`;
+    
+    // Try GraphQL first if token exists for maximum accuracy
+    try {
+      const map = await fetchGraphQLUserDetails([username], apiKey);
+      if (map[username.toLowerCase()]) {
+        return map[username.toLowerCase()];
+      }
+    } catch (e) {
+      console.warn("GraphQL single fetch failed, falling back to REST");
+    }
   }
 
+  // Fallback to REST
   try {
     const response = await fetch(`${BASE_URL}/users/${username}`, { headers });
     if (!response.ok) return null;
     const user = await response.json() as GitHubUserDetail;
     
-    // Also fetch activity for single user
+    // Fetch activity Proxy via REST Events (Inaccurate but works without token)
     try {
        const eventsRes = await fetch(`${BASE_URL}/users/${username}/events?per_page=100`, { headers });
        if (eventsRes.ok) {
@@ -163,7 +273,6 @@ export const getUserByName = async (username: string, apiKey?: string): Promise<
           user.recent_activity_count = calculateCommitsFromEvents(events);
        }
     } catch (e) {
-       // Ignore event fetch error
        user.recent_activity_count = 0;
     }
 
@@ -174,11 +283,6 @@ export const getUserByName = async (username: string, apiKey?: string): Promise<
   }
 };
 
-/**
- * Github Search API only provides summaries. 
- * We need to fetch details for each user to get accurate follower/repo counts 
- * if we want to display them or sort locally beyond the search API capabilities.
- */
 export const searchUsersInLocation = async (
   location: string,
   sort: SortOption,
@@ -193,16 +297,12 @@ export const searchUsersInLocation = async (
   if (apiKey) {
     headers['Authorization'] = `token ${apiKey}`;
   }
-
-  // API Limitation: For unauthenticated requests, rate limit is 60/hr.
   
   try {
     const q = `location:${location} type:user`;
-    // Map CONTRIBUTIONS sort to REPOSITORIES for the API query as a proxy, 
-    // then we will re-sort locally based on actual events.
     const apiSort = sort === SortOption.CONTRIBUTIONS ? 'repositories' : sort;
     
-    // Fetch top 50
+    // 1. Get the list of users via REST Search (Best for finding by location)
     const searchUrl = `${BASE_URL}/search/users?q=${encodeURIComponent(q)}&sort=${apiSort}&order=desc&per_page=50&page=${page}`;
     
     const searchRes = await fetch(searchUrl, { headers });
@@ -210,10 +310,8 @@ export const searchUsersInLocation = async (
     if (!searchRes.ok) {
         if (searchRes.status === 403 || searchRes.status === 429) {
              console.warn("Rate limited. Returning mock data.");
-             // Simulate network delay for mock
              await new Promise(resolve => setTimeout(resolve, 800));
              
-             // Sort mock data locally if needed
              let mockUsers = [...MOCK_USERS_CAMBODIA];
              if (sort === SortOption.CONTRIBUTIONS) {
                  mockUsers.sort((a, b) => (b.recent_activity_count || 0) - (a.recent_activity_count || 0));
@@ -225,8 +323,6 @@ export const searchUsersInLocation = async (
              
              return { users: mockUsers, total_count: 500, rateLimited: true }; 
         }
-        
-        // Return explicit error for other status codes (e.g., 500, 404, etc.)
         return { 
           users: [], 
           total_count: 0, 
@@ -236,54 +332,62 @@ export const searchUsersInLocation = async (
     }
 
     const searchData: SearchResponse = await searchRes.json();
-    
-    // The search result items lack detailed stats (followers, repos). 
-    // We must fetch details for each user.
-    // We also fetch 'events' to estimate contribution activity.
-    
-    const detailPromises = searchData.items.map(async (item: GitHubUserSummary) => {
-        try {
-            // 1. Fetch User Details
-            const detailRes = await fetch(`${BASE_URL}/users/${item.login}`, { headers });
-            
-            // If we hit rate limit during details fetch, we might return null here
-            // In a real app we might want to fail gracefully or retry, but here we just skip
-            if (!detailRes.ok) return null;
-            
-            const userDetail = await detailRes.json() as GitHubUserDetail;
+    const usernames = searchData.items.map(i => i.login);
 
-            // 2. Fetch Recent Events (Activity Proxy)
-            // Limit to 100 to get a good sample size of recent history
+    // 2. Hydrate details
+    let detailedUsers: GitHubUserDetail[] = [];
+
+    if (apiKey && usernames.length > 0) {
+       // STRATEGY A: High Accuracy via GraphQL (With Token)
+       // This gets the REAL contribution count (green squares)
+       try {
+         const usersMap = await fetchGraphQLUserDetails(usernames, apiKey);
+         detailedUsers = Object.values(usersMap);
+         
+         // Maintain order from search result if possible, or just re-sort below
+       } catch (e) {
+         console.error("GraphQL hydration failed", e);
+         // If GraphQL fails, detailedUsers is empty, code will fall through? 
+         // Ideally we should fallback to REST loop below, but simpler to return error or empty.
+         // Let's assume if provided token is valid, this works.
+       }
+    } 
+    
+    if (detailedUsers.length === 0) {
+       // STRATEGY B: Fallback via REST (No Token or GraphQL failed)
+       // Fetches details one by one and estimates activity from public events
+        const detailPromises = searchData.items.map(async (item: GitHubUserSummary) => {
             try {
-                const eventsRes = await fetch(`${BASE_URL}/users/${item.login}/events?per_page=100`, { headers });
-                if (eventsRes.ok) {
-                    const events = await eventsRes.json();
-                    userDetail.recent_activity_count = calculateCommitsFromEvents(events);
-                } else {
+                const detailRes = await fetch(`${BASE_URL}/users/${item.login}`, { headers });
+                if (!detailRes.ok) return null;
+                const userDetail = await detailRes.json() as GitHubUserDetail;
+
+                // Estimate activity
+                try {
+                    const eventsRes = await fetch(`${BASE_URL}/users/${item.login}/events?per_page=100`, { headers });
+                    if (eventsRes.ok) {
+                        const events = await eventsRes.json();
+                        userDetail.recent_activity_count = calculateCommitsFromEvents(events);
+                    } else {
+                        userDetail.recent_activity_count = 0;
+                    }
+                } catch (e) {
                     userDetail.recent_activity_count = 0;
                 }
+                return userDetail;
             } catch (e) {
-                console.warn(`Failed to fetch events for ${item.login}`, e);
-                userDetail.recent_activity_count = 0;
+                return null;
             }
-
-            return userDetail;
-        } catch (e) {
-            return null;
-        }
-    });
-
-    let detailedUsers = (await Promise.all(detailPromises)).filter((u): u is GitHubUserDetail => u !== null);
+        });
+        detailedUsers = (await Promise.all(detailPromises)).filter((u): u is GitHubUserDetail => u !== null);
+    }
     
-    // If we got 0 detailed users but we had search results, it's highly likely we hit a rate limit during details fetch.
-    // In this case, fallback to mock data so the user sees something.
+    // Check for rate limits during detail fetching
     if (detailedUsers.length === 0 && searchData.items.length > 0) {
-        console.warn("Details fetch likely rate limited. Fallback to mock.");
         return { users: MOCK_USERS_CAMBODIA, total_count: 500, rateLimited: true };
     }
 
-    // If sorting by CONTRIBUTIONS, we need to re-sort the page results based on the fetched activity count
-    // Note: This only sorts the *current page* of results, not the entire database (GitHub API limitation).
+    // Sort locally based on the fetched high-fidelity data
     if (sort === SortOption.CONTRIBUTIONS) {
         detailedUsers.sort((a, b) => (b.recent_activity_count || 0) - (a.recent_activity_count || 0));
     }
@@ -296,12 +400,11 @@ export const searchUsersInLocation = async (
 
   } catch (error) {
     console.error("Failed to fetch GitHub data", error);
-    // Return error message for network failures
     return { 
       users: [], 
       total_count: 0, 
       rateLimited: false, 
-      error: error instanceof Error ? error.message : "Connection failed. Please check your internet." 
+      error: error instanceof Error ? error.message : "Connection failed." 
     };
   }
 };
