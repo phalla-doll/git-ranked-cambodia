@@ -1,6 +1,6 @@
 import React from 'react';
 import { GitHubUserDetail, SortOption } from '../types';
-import { Users, BookOpen, MapPin, ExternalLink, Activity, Terminal } from 'lucide-react';
+import { Users, BookOpen, ExternalLink, Activity, Terminal } from 'lucide-react';
 
 interface LeaderboardTableProps {
   users: GitHubUserDetail[];
@@ -48,107 +48,132 @@ export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({ users, sortB
   };
 
   return (
-    <div className="bg-dark-surface border border-dark-border overflow-hidden flex flex-col shadow-xl shadow-black/20 relative">
-      {/* Corner Chevrons for Table Container */}
+    <div className="bg-dark-surface border border-dark-border flex flex-col shadow-xl shadow-black/20 relative min-h-[500px]">
+      {/* Container Corner Chevrons */}
       <div className="absolute top-0 left-0 w-3 h-3 border-l-2 border-t-2 border-neon-500 z-10"></div>
       <div className="absolute top-0 right-0 w-3 h-3 border-r-2 border-t-2 border-neon-500 z-10"></div>
       <div className="absolute bottom-0 left-0 w-3 h-3 border-l-2 border-b-2 border-neon-500 z-10"></div>
       <div className="absolute bottom-0 right-0 w-3 h-3 border-r-2 border-b-2 border-neon-500 z-10"></div>
 
-      <div className="overflow-x-auto custom-scrollbar">
-        <table className="w-full text-left border-collapse min-w-[700px]">
-          <thead>
-            <tr className="bg-dark-surface border-b border-dark-border">
-              <th className="py-5 px-6 text-xs font-medium text-dark-text uppercase tracking-wider w-20 text-center">Rank</th>
-              <th className="py-5 px-6 text-xs font-medium text-dark-text uppercase tracking-wider">Developer</th>
-              <th className="py-5 px-6 text-xs font-medium text-dark-text uppercase tracking-wider text-right">
-                <div className="flex items-center justify-end gap-2">
-                   <Activity size={14} className={sortBy === SortOption.CONTRIBUTIONS ? "text-neon-400" : ""} />
-                   <span>Activity</span>
-                </div>
-              </th>
-              <th className="py-5 px-6 text-xs font-medium text-dark-text uppercase tracking-wider text-right">
-                <div className="flex items-center justify-end gap-2">
-                   <Users size={14} /> 
-                   <span>Followers</span>
-                </div>
-              </th>
-              <th className="py-5 px-6 text-xs font-medium text-dark-text uppercase tracking-wider text-right hidden sm:table-cell">
-                <div className="flex items-center justify-end gap-2">
-                   <BookOpen size={14} /> 
-                   <span>Repos</span>
-                </div>
-              </th>
-              <th className="py-5 px-6 text-xs font-medium text-dark-text uppercase tracking-wider text-center">Action</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-dark-border">
-            {users.map((user, index) => (
-              <tr key={user.id} className="hover:bg-dark-hover/50 transition-colors group">
-                <td className="py-4 px-6 text-center">
-                   <span className={`inline-flex items-center justify-center w-8 h-8 text-xs font-bold border ${getRankStyle(index)}`}>
-                     {index + 1}
-                   </span>
-                </td>
-                <td className="py-4 px-6">
-                  <div className="flex items-center gap-4">
-                    <div className="relative">
-                      <img 
-                        src={user.avatar_url} 
-                        alt={user.login} 
-                        className="w-12 h-12 border border-dark-border shadow-sm bg-dark-bg object-cover"
-                        loading="lazy"
-                      />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2">
-                         <span className="font-semibold text-dark-heading text-sm truncate max-w-[180px] group-hover:text-neon-400 transition-colors">
-                            {user.name || user.login}
-                         </span>
-                         {user.company && (
-                           <span className="hidden lg:inline-flex items-center px-2 py-0.5 text-[10px] font-medium bg-dark-bg border border-dark-border text-dark-text truncate max-w-[120px]">
-                             {user.company}
-                           </span>
-                         )}
-                      </div>
-                      <div className="text-xs text-dark-text truncate mt-1">@{user.login}</div>
-                    </div>
-                  </div>
-                </td>
-                <td className="py-4 px-6 text-right">
-                   <div className="flex flex-col items-end">
-                      <span className={`font-semibold text-sm ${sortBy === SortOption.CONTRIBUTIONS ? 'text-neon-400' : 'text-dark-heading'}`}>
-                        {user.recent_activity_count !== undefined ? user.recent_activity_count : '-'}
-                      </span>
-                      <span className="text-[10px] text-dark-text">events</span>
-                   </div>
-                </td>
-                <td className="py-4 px-6 text-right">
-                  <span className={`font-semibold text-sm ${sortBy === SortOption.FOLLOWERS ? 'text-neon-400' : 'text-dark-heading'}`}>
-                    {user.followers.toLocaleString()}
-                  </span>
-                </td>
-                <td className="py-4 px-6 text-right hidden sm:table-cell">
-                  <span className={`font-semibold text-sm ${sortBy === SortOption.REPOS ? 'text-neon-400' : 'text-dark-heading'}`}>
-                    {user.public_repos.toLocaleString()}
-                  </span>
-                </td>
-                <td className="py-4 px-6 text-center">
-                  <a 
-                    href={user.html_url} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center w-8 h-8 bg-dark-bg border border-dark-border text-dark-text hover:text-white hover:bg-neon-500 hover:border-neon-500 transition-all focus:outline-none"
-                    title="Access GitHub Profile"
-                  >
-                    <ExternalLink size={14} />
-                  </a>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      {/* Header - Hidden on mobile, visible on lg */}
+      <div className="hidden lg:grid grid-cols-12 gap-4 px-6 py-4 border-b border-dark-border bg-dark-surface/50 text-xs font-medium text-dark-text uppercase tracking-wider">
+        <div className="col-span-1 text-center">Rank</div>
+        <div className="col-span-5">Developer</div>
+        <div className="col-span-2 text-right flex justify-end gap-2 items-center">
+            <Activity size={14} className={sortBy === SortOption.CONTRIBUTIONS ? "text-neon-400" : ""} />
+            Activity
+        </div>
+        <div className="col-span-2 text-right flex justify-end gap-2 items-center">
+            <Users size={14} />
+            Followers
+        </div>
+        <div className="col-span-1 text-right flex justify-end gap-2 items-center">
+            <BookOpen size={14} />
+            Repos
+        </div>
+        <div className="col-span-1 text-center">Action</div>
       </div>
+
+      {/* Rows */}
+      <div className="divide-y divide-dark-border">
+        {users.map((user, index) => (
+          <div 
+            key={user.id} 
+            className="group relative hover:bg-dark-hover/30 transition-colors p-4 lg:px-6 lg:py-4"
+          >
+             {/* Row Hover Marker */}
+             <div className="absolute left-0 top-0 bottom-0 w-1 bg-neon-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+
+             <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
+                
+                {/* Mobile Top Row: Rank + Profile */}
+                <div className="col-span-1 lg:col-span-6 flex items-center gap-4">
+                   {/* Rank Badge */}
+                   <div className={`flex-shrink-0 w-8 h-8 flex items-center justify-center text-xs font-bold border ${getRankStyle(index)}`}>
+                      {index + 1}
+                   </div>
+                   
+                   {/* Avatar & Name */}
+                   <div className="flex items-center gap-3 min-w-0">
+                      <div className="relative">
+                        <img 
+                            src={user.avatar_url} 
+                            alt={user.login} 
+                            className="w-10 h-10 lg:w-12 lg:h-12 border border-dark-border bg-dark-bg object-cover"
+                            loading="lazy"
+                        />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                          <div className="flex flex-wrap items-center gap-x-2">
+                             <span className="font-semibold text-dark-heading text-sm group-hover:text-neon-400 transition-colors truncate">
+                                {user.name || user.login}
+                             </span>
+                             {user.company && (
+                               <span className="hidden sm:inline-block px-1.5 py-0.5 text-[10px] bg-dark-bg border border-dark-border text-dark-text truncate max-w-[100px]">
+                                 {user.company}
+                               </span>
+                             )}
+                          </div>
+                          <div className="text-xs text-dark-text truncate mt-0.5">@{user.login}</div>
+                      </div>
+                   </div>
+                </div>
+
+                {/* Mobile Bottom Row / Desktop Columns: Stats */}
+                <div className="col-span-1 lg:col-span-5 grid grid-cols-3 gap-2 lg:gap-4 mt-2 lg:mt-0 pl-12 lg:pl-0">
+                    
+                    {/* Activity */}
+                    <div className="flex flex-col lg:items-end justify-center">
+                        <span className="lg:hidden text-[10px] text-dark-text uppercase mb-1 flex items-center gap-1">
+                            <Activity size={10} /> Activity
+                        </span>
+                        <div className="flex items-baseline gap-1">
+                            <span className={`font-semibold text-sm ${sortBy === SortOption.CONTRIBUTIONS ? 'text-neon-400' : 'text-dark-heading'}`}>
+                                {user.recent_activity_count !== undefined ? user.recent_activity_count : '-'}
+                            </span>
+                            <span className="text-[10px] text-dark-text hidden lg:inline">events</span>
+                        </div>
+                    </div>
+
+                    {/* Followers */}
+                    <div className="flex flex-col lg:items-end justify-center">
+                        <span className="lg:hidden text-[10px] text-dark-text uppercase mb-1 flex items-center gap-1">
+                             <Users size={10} /> Followers
+                        </span>
+                        <span className={`font-semibold text-sm ${sortBy === SortOption.FOLLOWERS ? 'text-neon-400' : 'text-dark-heading'}`}>
+                            {user.followers.toLocaleString()}
+                        </span>
+                    </div>
+
+                    {/* Repos */}
+                    <div className="flex flex-col lg:items-end lg:col-span-1 justify-center">
+                        <span className="lg:hidden text-[10px] text-dark-text uppercase mb-1 flex items-center gap-1">
+                            <BookOpen size={10} /> Repos
+                        </span>
+                        <span className={`font-semibold text-sm ${sortBy === SortOption.REPOS ? 'text-neon-400' : 'text-dark-heading'}`}>
+                             {user.public_repos.toLocaleString()}
+                        </span>
+                    </div>
+                </div>
+
+                {/* Action Button */}
+                <div className="absolute right-4 top-4 lg:static lg:col-span-1 flex justify-center lg:justify-center">
+                    <a 
+                      href={user.html_url} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center justify-center w-8 h-8 bg-dark-bg border border-dark-border text-dark-text hover:text-white hover:bg-neon-500 hover:border-neon-500 transition-all focus:outline-none"
+                      title="Access GitHub Profile"
+                    >
+                      <ExternalLink size={14} />
+                    </a>
+                </div>
+
+             </div>
+          </div>
+        ))}
+      </div>
+
       {loading && users.length > 0 && (
           <div className="p-4 text-center text-dark-text text-xs bg-dark-surface border-t border-dark-border">
              <div className="flex items-center justify-center gap-2">
