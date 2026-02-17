@@ -1,6 +1,7 @@
 import React from 'react';
 import { GitHubUserDetail, SortOption } from '../types';
-import { Users, BookOpen, ExternalLink, Activity, UserPlus, Terminal, AlertTriangle, SearchX, MapPin, Building } from 'lucide-react';
+import { ExternalLink, Activity, AlertTriangle, SearchX, MapPin, Building } from 'lucide-react';
+import { UserProfileStats } from './UserProfileStats';
 
 interface LeaderboardTableProps {
   users: GitHubUserDetail[];
@@ -8,18 +9,6 @@ interface LeaderboardTableProps {
   loading: boolean;
   error?: string | null;
 }
-
-const StatBox = ({ label, value, icon: Icon, highlight = false }: { label: string, value: string | number, icon?: React.ElementType, highlight?: boolean }) => (
-  <div className={`flex flex-col items-center justify-center p-2 sm:p-3 min-w-[70px] sm:min-w-[80px] transition-colors ${highlight ? 'bg-neon-500/5' : 'bg-dark-bg'}`}>
-    <span className={`text-sm sm:text-base font-bold ${highlight ? 'text-neon-400' : 'text-white'}`}>
-      {typeof value === 'number' ? value.toLocaleString() : value}
-    </span>
-    <div className="flex items-center gap-1 mt-1">
-      {Icon && <Icon size={10} className="text-dark-text/70" />}
-      <span className="text-[9px] sm:text-[10px] text-dark-text/70 uppercase font-medium tracking-wide">{label}</span>
-    </div>
-  </div>
-);
 
 export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({ users, sortBy, loading, error }) => {
   
@@ -152,33 +141,9 @@ export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({ users, sortB
                     </div>
                 </div>
 
-                {/* Stats Grid - "UserModal" Style */}
+                {/* Stats Grid - New Component */}
                 <div className="w-full md:w-auto shrink-0 mt-2 md:mt-0">
-                   <div className="grid grid-cols-4 border border-dark-border divide-x divide-dark-border bg-dark-bg/50 rounded-sm overflow-hidden">
-                      <StatBox 
-                        label="Repos" 
-                        value={user.public_repos} 
-                        icon={BookOpen}
-                        highlight={sortBy === SortOption.REPOS} 
-                      />
-                      <StatBox 
-                        label="Followers" 
-                        value={user.followers} 
-                        icon={Users}
-                        highlight={sortBy === SortOption.FOLLOWERS} 
-                      />
-                      <StatBox 
-                        label="Following" 
-                        value={user.following} 
-                        icon={UserPlus}
-                      />
-                      <StatBox 
-                        label="Activity" 
-                        value={user.recent_activity_count !== undefined ? user.recent_activity_count : '-'} 
-                        icon={Activity}
-                        highlight={sortBy === SortOption.CONTRIBUTIONS} 
-                      />
-                   </div>
+                   <UserProfileStats user={user} sortBy={sortBy} />
                 </div>
 
                 {/* Desktop Action */}
