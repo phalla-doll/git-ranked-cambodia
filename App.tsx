@@ -400,7 +400,7 @@ function App() {
           {/* Main Leaderboard */}
           <div className="lg:col-span-2 space-y-4">
              <div className="flex items-center justify-between">
-                <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2">
+                <h2 className="text-lg font-medium text-slate-800 flex items-center gap-2">
                   <Code2 className="text-indigo-600 h-5 w-5" />
                   Top Developers in {location}
                 </h2>
@@ -449,7 +449,7 @@ function App() {
                <div className="absolute top-0 right-0 p-8 opacity-10">
                  <GitBranch size={120} />
                </div>
-               <h3 className="text-lg font-bold mb-2 relative z-10">Api Limitations</h3>
+               <h3 className="text-lg font-semibold mb-2 relative z-10">Api Limitations</h3>
                <p className="text-indigo-200 text-sm leading-relaxed relative z-10 mb-4">
                  GitHub's free API limits searches to prevent abuse. 
                  This dashboard ranks users by Followers and Repositories as proxies for contribution, 
