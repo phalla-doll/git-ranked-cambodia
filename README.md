@@ -20,7 +20,7 @@ A modern, minimalist leaderboard that ranks GitHub users in Cambodia (and any ot
 - **Styling**: Tailwind CSS
 - **Icons**: Lucide React
 - **Charts**: Recharts
-- **Typography**: Outfit (Sans) & Roboto Mono (Monospace)
+- **Typography**: Inter (Sans) & Roboto Mono (Monospace)
 
 ## 📦 Installation & Setup
 
