@@ -544,7 +544,7 @@ function App() {
               href="https://manthaa.dev/" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="font-semibold text-gray-900 bg-gray-100 px-2 py-0.5 rounded-md hover:bg-gray-200 transition-colors"
+              className="font-medium text-gray-900 bg-gray-100"
             >
               Mantha
             </a>
