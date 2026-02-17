@@ -384,7 +384,7 @@ function App() {
                   <input
                     type="text"
                     className="block w-full pl-12 pr-4 py-4 bg-white rounded-2xl border-0 ring-1 ring-gray-200 text-apple-text placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-apple-blue/50 transition-all font-medium text-lg"
-                    placeholder="Search users (e.g. location, name)..."
+                    placeholder="Search by location (e.g. Phnom Penh)..."
                     value={location}
                     onChange={handleLocationChange}
                     onFocus={() => {

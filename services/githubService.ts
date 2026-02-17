@@ -329,9 +329,9 @@ export const searchUsersInLocation = async (
   }
   
   try {
-    // UPDATED: No longer strictly filtering by location.
-    // This allows the user to search by username, name, or location freely.
-    const q = `${query} type:user`;
+    // UPDATED: Strictly filter by location as requested.
+    // We use quotes to handle multi-word locations (e.g. "Phnom Penh")
+    const q = `location:"${query}"`;
     
     // Fetch 100 users per page
     const fetchSize = 100;
