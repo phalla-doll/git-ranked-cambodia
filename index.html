@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>GitRanked Cambodia</title>
+    <title>GitRanked_Terminal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,9 +16,32 @@
               sans: ['Outfit', 'sans-serif'],
             },
             colors: {
-              slate: {
-                850: '#1e293b',
+              // Custom Dark Theme Palette based on LumenTrade
+              dark: {
+                bg: '#0d1117',       // Main background (very deep blue-grey)
+                surface: '#161b22',  // Card background
+                border: '#21262d',   // Border color
+                hover: '#21262d',    // Hover state
+                text: '#8b949e',     // Secondary text
+                heading: '#f0f6fc',  // Primary text/headings
+              },
+              brand: {
+                DEFAULT: '#2ea043',  // Fallback
+                400: '#3fb950',      // Mint/Green accent (similar to Github green or the reference mint)
+                500: '#238636',      // Darker green for backgrounds
+                glow: 'rgba(56, 189, 248, 0.15)' // Subtle glow
+              },
+              // Overwrite reference "neon" with our new mint brand
+              neon: {
+                 400: '#2effa3', // Bright Mint
+                 500: '#00d084', // Primary Mint
               }
+            },
+            animation: {
+              'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            },
+            backgroundImage: {
+               'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
             }
           }
         }
@@ -26,11 +49,15 @@
     </script>
     <style>
       body {
-        background-color: #f8fafc;
-        color: #0f172a;
+        background-color: #0d1117; 
+        color: #f0f6fc;
         font-family: 'Outfit', sans-serif;
+        /* Subtle radial gradient for depth like the reference */
+        background-image: radial-gradient(circle at 50% 0%, #161b22 0%, #0d1117 70%);
+        min-height: 100vh;
       }
-      /* Custom scrollbar for table container */
+      
+      /* Modern minimalist scrollbar */
       .custom-scrollbar::-webkit-scrollbar {
         height: 6px;
         width: 6px;
@@ -39,8 +66,18 @@
         background: transparent;
       }
       .custom-scrollbar::-webkit-scrollbar-thumb {
-        background-color: #cbd5e1;
-        border-radius: 20px;
+        background-color: #30363d;
+        border-radius: 99px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background-color: #8b949e;
+      }
+      
+      /* Glass effect helper */
+      .glass-panel {
+        background: rgba(22, 27, 34, 0.7);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(240, 246, 252, 0.1);
       }
     </style>
   <script type="importmap">
