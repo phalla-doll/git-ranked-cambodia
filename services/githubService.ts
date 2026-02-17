@@ -139,7 +139,7 @@ export const searchUsersInLocation = async (
   sort: SortOption,
   page: number = 1,
   apiKey?: string
-): Promise<{ users: GitHubUserDetail[], total_count: number, rateLimited: boolean }> => {
+): Promise<{ users: GitHubUserDetail[], total_count: number, rateLimited: boolean, error?: string }> => {
   
   const headers: HeadersInit = {
     'Accept': 'application/vnd.github.v3+json',
@@ -150,7 +150,6 @@ export const searchUsersInLocation = async (
   }
 
   // API Limitation: For unauthenticated requests, rate limit is 60/hr.
-  // Use mock data if request fails or purely for demo if no API key is present and quota exceeded.
   
   try {
     const q = `location:${location} type:user`;
@@ -180,7 +179,14 @@ export const searchUsersInLocation = async (
              
              return { users: mockUsers, total_count: 500, rateLimited: true }; 
         }
-        throw new Error(`GitHub Search API Error: ${searchRes.statusText}`);
+        
+        // Return explicit error for other status codes (e.g., 500, 404, etc.)
+        return { 
+          users: [], 
+          total_count: 0, 
+          rateLimited: false, 
+          error: `API Error (${searchRes.status}): ${searchRes.statusText}` 
+        };
     }
 
     const searchData: SearchResponse = await searchRes.json();
@@ -233,7 +239,12 @@ export const searchUsersInLocation = async (
 
   } catch (error) {
     console.error("Failed to fetch GitHub data", error);
-    // Fallback to mock data on error
-    return { users: MOCK_USERS_CAMBODIA, total_count: 500, rateLimited: true };
+    // Return error message for network failures
+    return { 
+      users: [], 
+      total_count: 0, 
+      rateLimited: false, 
+      error: error instanceof Error ? error.message : "Connection failed. Please check your internet." 
+    };
   }
 };

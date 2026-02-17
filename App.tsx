@@ -47,6 +47,7 @@ function App() {
   const [showKeyInput, setShowKeyInput] = useState(false);
   const [users, setUsers] = useState<GitHubUserDetail[]>([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<SortOption>(SortOption.FOLLOWERS);
   const [totalCount, setTotalCount] = useState(0);
   const [rateLimitHit, setRateLimitHit] = useState(false);
@@ -55,7 +56,7 @@ function App() {
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const suggestionsRef = useRef<HTMLUListElement>(null);
-  const inputWrapperRef = useRef<HTMLDivElement>(null);
+  const inputWrapperRef = useRef<HTMLFormElement>(null);
 
   // User Search State
   const [userSearchQuery, setUserSearchQuery] = useState('');
@@ -84,15 +85,22 @@ function App() {
   const fetchUsers = useCallback(async (loc: string = location) => {
     setLoading(true);
     setUsers([]); 
+    setError(null);
     setRateLimitHit(false);
     setShowSuggestions(false);
     try {
-      const { users: fetchedUsers, total_count, rateLimited } = await searchUsersInLocation(loc, sortBy, 1, apiKey);
-      setUsers(fetchedUsers);
-      setTotalCount(total_count);
-      setRateLimitHit(rateLimited);
+      const { users: fetchedUsers, total_count, rateLimited, error: apiError } = await searchUsersInLocation(loc, sortBy, 1, apiKey);
+      
+      if (apiError) {
+        setError(apiError);
+      } else {
+        setUsers(fetchedUsers);
+        setTotalCount(total_count);
+        setRateLimitHit(rateLimited);
+      }
     } catch (error) {
       console.error(error);
+      setError("An unexpected error occurred while processing your request.");
     } finally {
       setLoading(false);
     }
@@ -387,7 +395,7 @@ function App() {
                    <span className="text-[10px] font-bold text-neon-400 uppercase tracking-wide">Live Data</span>
                 </div>
              </div>
-             <LeaderboardTable users={users} sortBy={sortBy} loading={loading} />
+             <LeaderboardTable users={users} sortBy={sortBy} loading={loading} error={error} />
           </div>
 
           {/* Sidebar / Charts */}
@@ -447,7 +455,7 @@ function App() {
                <div className="absolute bottom-0 left-0 w-3 h-3 border-l-2 border-b-2 border-neon-500"></div>
                <div className="absolute bottom-0 right-0 w-3 h-3 border-r-2 border-b-2 border-neon-500"></div>
 
-               <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
+               <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-1 transition-opacity">
                  <Cpu size={120} />
                </div>
                <h3 className="text-sm font-semibold text-white mb-2 relative z-10">Ranking Logic</h3>
