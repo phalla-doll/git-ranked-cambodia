@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { 
   Search, 
   MapPin, 
@@ -26,6 +26,11 @@ import { searchUsersInLocation, getUserByName } from './services/githubService';
 import { StatCard } from './components/StatCard';
 import { LeaderboardTable } from './components/LeaderboardTable';
 import { UserModal } from './components/UserModal';
+import { POPULAR_LOCATIONS } from './data/locations';
+
+function escapeRegExp(string: string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
 
 function App() {
   const [location, setLocation] = useState('Cambodia');
@@ -37,25 +42,46 @@ function App() {
   const [totalCount, setTotalCount] = useState(0);
   const [rateLimitHit, setRateLimitHit] = useState(false);
 
+  // Autocomplete State
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const suggestionsRef = useRef<HTMLUListElement>(null);
+  const inputWrapperRef = useRef<HTMLDivElement>(null);
+
   // User Search State
   const [userSearchQuery, setUserSearchQuery] = useState('');
   const [isSearchingUser, setIsSearchingUser] = useState(false);
   const [modalUser, setModalUser] = useState<GitHubUserDetail | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Debounced search trigger could go here, but doing submit-based for rate limit safety
-  const fetchUsers = useCallback(async () => {
+  // Handle click outside to close suggestions
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        inputWrapperRef.current && 
+        !inputWrapperRef.current.contains(event.target as Node)
+      ) {
+        setShowSuggestions(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  // Main search function
+  const fetchUsers = useCallback(async (loc: string = location) => {
     setLoading(true);
-    setUsers([]); // Clear current list on new search
+    setUsers([]); 
     setRateLimitHit(false);
+    setShowSuggestions(false);
     try {
-      const { users: fetchedUsers, total_count, rateLimited } = await searchUsersInLocation(location, sortBy, 1, apiKey);
+      const { users: fetchedUsers, total_count, rateLimited } = await searchUsersInLocation(loc, sortBy, 1, apiKey);
       setUsers(fetchedUsers);
       setTotalCount(total_count);
       setRateLimitHit(rateLimited);
-      if (rateLimited && !apiKey) {
-        // Optional: auto-show key input or just show banner
-      }
     } catch (error) {
       console.error(error);
     } finally {
@@ -63,13 +89,43 @@ function App() {
     }
   }, [location, sortBy, apiKey]);
 
+  // Initial load
   useEffect(() => {
     fetchUsers();
-  }, [fetchUsers]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); 
+
+  // Reload when sort or api key changes, but NOT when location changes (wait for submit)
+  useEffect(() => {
+    fetchUsers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sortBy, apiKey]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     fetchUsers();
+  };
+
+  const handleLocationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setLocation(value);
+    
+    if (value.trim().length > 0) {
+      const filtered = POPULAR_LOCATIONS.filter(loc => 
+        loc.toLowerCase().includes(value.toLowerCase()) && 
+        loc.toLowerCase() !== value.toLowerCase()
+      ).slice(0, 6);
+      setSuggestions(filtered);
+      setShowSuggestions(true);
+    } else {
+      setShowSuggestions(false);
+    }
+  };
+
+  const handleSelectSuggestion = (suggestion: string) => {
+    setLocation(suggestion);
+    setShowSuggestions(false);
+    fetchUsers(suggestion);
   };
 
   const handleUserSearchKeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -220,11 +276,11 @@ function App() {
                  GitRanked <span className="text-indigo-600">{location}</span>
                </h1>
                <p className="text-slate-500 mb-6">
-                 Discover the most active and influential developers in your area. 
+                 Discover the most active, influential, and cracked developers in your area. 
                  Ranking based on public activity and community engagement.
                </p>
 
-               <form onSubmit={handleSearch} className="relative group">
+               <form onSubmit={handleSearch} className="relative group" ref={inputWrapperRef}>
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <MapPin className="h-5 w-5 text-slate-400 group-focus-within:text-indigo-500 transition-colors" />
                   </div>
@@ -233,8 +289,34 @@ function App() {
                     className="block w-full pl-10 pr-4 py-3 border border-slate-300 rounded-xl leading-5 bg-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-shadow sm:text-sm shadow-sm"
                     placeholder="Enter location (e.g., Cambodia, Phnom Penh, Tokyo)"
                     value={location}
-                    onChange={(e) => setLocation(e.target.value)}
+                    onChange={handleLocationChange}
+                    onFocus={() => {
+                        if (location.trim().length > 0 && suggestions.length > 0) setShowSuggestions(true);
+                    }}
+                    autoComplete="off"
                   />
+                  
+                  {/* Autocomplete Dropdown */}
+                  {showSuggestions && suggestions.length > 0 && (
+                    <ul 
+                      ref={suggestionsRef}
+                      className="absolute top-full left-0 right-0 mt-1 bg-white border border-slate-200 rounded-xl shadow-lg z-50 max-h-60 overflow-y-auto"
+                    >
+                      {suggestions.map((suggestion, index) => (
+                        <li 
+                          key={index}
+                          onClick={() => handleSelectSuggestion(suggestion)}
+                          className="px-4 py-3 text-sm text-slate-700 hover:bg-slate-50 cursor-pointer flex items-center gap-2"
+                        >
+                          <MapPin size={14} className="text-slate-400" />
+                          <span dangerouslySetInnerHTML={{
+                             __html: suggestion.replace(new RegExp(`(${escapeRegExp(location)})`, 'gi'), '<span class="font-bold text-indigo-600">$1</span>')
+                          }} />
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+
                   <button type="submit" className="absolute inset-y-1.5 right-1.5 bg-slate-900 text-white px-4 rounded-lg text-sm font-medium hover:bg-slate-800 transition-colors">
                     Search
                   </button>
