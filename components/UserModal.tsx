@@ -19,14 +19,15 @@ export const UserModal: React.FC<UserModalProps> = ({ user, isOpen, onClose }) =
       */}
       <div 
         className="fixed inset-0 bg-gray-900/20 backdrop-blur-sm transition-opacity animate-in fade-in duration-200" 
-        onClick={onClose}
+        aria-hidden="true"
       />
 
       {/* 
         Scrollable wrapper
         Allows the modal to scroll if it is taller than the viewport 
+        Added onClick={onClose} here because this element covers the screen
       */}
-      <div className="fixed inset-0 z-10 overflow-y-auto">
+      <div className="fixed inset-0 z-10 overflow-y-auto" onClick={onClose}>
         <div className="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
           
           {/* Modal Panel */}
