@@ -538,13 +538,13 @@ function App() {
             <p className="text-lg font-semibold text-gray-900">GitRanked Cambodia</p>
             <p className="text-base text-gray-500">Community leaderboard for local developers.</p>
           </div>
-          <div className="text-sm text-gray-600 flex flex-wrap justify-center items-center gap-2">
+          <div className="text-base text-gray-600 flex flex-wrap justify-center items-center gap-1.5">
             <span>Created as a hobby and maintained by</span>
             <a 
               href="https://manthaa.dev/" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="font-semibold text-gray-900 bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-md transition-colors"
+              className="font-semibold text-gray-900 hover:underline transition-colors"
             >
               Mantha
             </a>
