@@ -103,38 +103,46 @@ export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({ users, sortB
                           loading="lazy"
                       />
                       {index < 3 && (
-                        <div className="absolute -bottom-2 -right-2 w-6 h-6 bg-dark-surface border border-dark-border flex items-center justify-center rounded-full text-[10px]">
+                        <div className="absolute -bottom-2 -right-2 w-6 h-6 bg-dark-surface border border-dark-border flex items-center justify-center rounded-full text-[10px] shadow-sm">
                            {index === 0 ? '👑' : index === 1 ? '🥈' : '🥉'}
                         </div>
                       )}
                     </div>
                     
-                    <div className="min-w-0 flex-1">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <h3 className="text-lg sm:text-xl font-semibold text-white truncate group-hover:text-neon-400 transition-colors">
+                    <div className="min-w-0 flex-1 flex flex-col justify-center">
+                        {/* Name and Handle Stacked */}
+                        <div>
+                          <h3 className="text-lg sm:text-xl font-bold text-white group-hover:text-neon-400 transition-colors break-words leading-tight">
                               {user.name || user.login}
                           </h3>
-                          <span className="text-sm text-dark-text font-mono">@{user.login}</span>
+                          <a 
+                             href={user.html_url} 
+                             target="_blank" 
+                             rel="noopener noreferrer"
+                             className="text-sm text-neon-500/80 font-mono hover:text-neon-400 hover:underline w-fit block mt-0.5"
+                          >
+                            @{user.login}
+                          </a>
                         </div>
                         
                         {/* Meta Tags */}
                         <div className="flex flex-wrap gap-y-1 gap-x-3 mt-2 text-xs text-dark-text/80">
                            {user.location && (
-                             <div className="flex items-center gap-1">
-                               <MapPin size={10} />
+                             <div className="flex items-center gap-1.5" title="Location">
+                               <MapPin size={11} className="text-dark-text/60" />
                                <span className="truncate max-w-[150px]">{user.location}</span>
                              </div>
                            )}
                            {user.company && (
-                             <div className="flex items-center gap-1">
-                               <Building size={10} />
+                             <div className="flex items-center gap-1.5" title="Company">
+                               <Building size={11} className="text-dark-text/60" />
                                <span className="truncate max-w-[150px]">{user.company}</span>
                              </div>
                            )}
                         </div>
 
                         {user.bio && (
-                          <p className="text-xs text-dark-text/60 truncate mt-2 max-w-lg hidden sm:block">
+                          <p className="text-xs text-dark-text/60 mt-2.5 max-w-xl hidden sm:block line-clamp-2 leading-relaxed">
                             {user.bio}
                           </p>
                         )}
@@ -152,7 +160,7 @@ export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({ users, sortB
                       href={user.html_url} 
                       target="_blank" 
                       rel="noopener noreferrer"
-                      className="flex items-center justify-center w-10 h-10 rounded-full border border-dark-border text-dark-text hover:text-white hover:bg-neon-500 hover:border-neon-500 transition-all shadow-sm"
+                      className="flex items-center justify-center w-10 h-10 rounded-full border border-dark-border text-dark-text hover:text-white hover:bg-neon-500 hover:border-neon-500 transition-all shadow-sm group-hover:scale-110"
                       title="View on GitHub"
                     >
                       <ExternalLink size={18} />
