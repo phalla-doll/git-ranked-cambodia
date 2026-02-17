@@ -102,7 +102,7 @@ const BASE_MOCK_USERS: GitHubUserDetail[] = [
   }
 ];
 
-// Generate 100 mock users for better pagination testing
+// Generate 500 mock users for better pagination testing
 const generateMockUsers = (count: number): GitHubUserDetail[] => {
   const users = [...BASE_MOCK_USERS];
   const companies = ["Freelance", "TechKhmer", "StartupKH", "AngkorDev", "MekongSoft", "Smart Axiata", null];
@@ -135,7 +135,7 @@ const generateMockUsers = (count: number): GitHubUserDetail[] => {
   return users.sort((a, b) => b.followers - a.followers);
 };
 
-const MOCK_USERS_CAMBODIA = generateMockUsers(100);
+const MOCK_USERS_CAMBODIA = generateMockUsers(500);
 
 // Fallback logic for REST API (when no token is provided)
 const calculateCommitsFromEvents = (events: any[]): number => {
@@ -331,14 +331,13 @@ export const searchUsersInLocation = async (
   try {
     // UPDATED: No longer strictly filtering by location.
     // This allows the user to search by username, name, or location freely.
-    // Searching "Cambodia" will still work (matching location/bio), 
-    // but searching "john" will now find users named John.
     const q = `${query} type:user`;
     
-    // Limit to 30 to avoid hitting the 60 req/hr limit during hydration
-    const fetchSize = 30;
+    // Fetch 100 users per page
+    const fetchSize = 100;
     
     // 1. Get the list of users via REST Search
+    // We pass the sort option directly to the API
     const searchUrl = `${BASE_URL}/search/users?q=${encodeURIComponent(q)}&sort=${sort}&order=desc&per_page=${fetchSize}&page=${page}`;
     
     const searchRes = await fetch(searchUrl, { headers });
@@ -356,9 +355,9 @@ export const searchUsersInLocation = async (
                  mockUsers.sort((a, b) => b.public_repos - a.public_repos);
              }
              
-             // Handle Pagination for Mock Data
-             const start = (page - 1) * 25;
-             const paginatedMock = mockUsers.slice(start, start + 25);
+             // Handle Pagination for Mock Data (page size 100)
+             const start = (page - 1) * 100;
+             const paginatedMock = mockUsers.slice(start, start + 100);
 
              return { users: paginatedMock, total_count: mockUsers.length, rateLimited: true }; 
         }
@@ -378,7 +377,6 @@ export const searchUsersInLocation = async (
 
     if (apiKey && usernames.length > 0) {
        // STRATEGY A: High Accuracy via GraphQL (With Token)
-       // This gets the REAL contribution count (green squares)
        try {
          const usersMap = await fetchGraphQLUserDetails(usernames, apiKey);
          
@@ -409,14 +407,12 @@ export const searchUsersInLocation = async (
     
     // Check for rate limits during detail fetching
     if (detailedUsers.length === 0 && searchData.items.length > 0) {
-        return { users: MOCK_USERS_CAMBODIA.slice(0, 25), total_count: 500, rateLimited: true };
+        return { users: MOCK_USERS_CAMBODIA.slice(0, 100), total_count: 500, rateLimited: true };
     }
 
-    // Slice to standard page size (25) to ensure UI pagination logic remains consistent
-    const finalUsers = detailedUsers.slice(0, 25);
-
+    // Return all users (up to 100) without slicing to 25
     return {
-        users: finalUsers,
+        users: detailedUsers,
         total_count: searchData.total_count,
         rateLimited: false
     };

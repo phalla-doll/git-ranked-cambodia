@@ -78,7 +78,7 @@ export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({ users, sortB
     );
   }
 
-  const baseRank = (page - 1) * 25;
+  const baseRank = (page - 1) * 100;
 
   // Table Layout
   return (

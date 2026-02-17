@@ -441,7 +441,7 @@ function App() {
                  </span>
                  <button
                     onClick={() => setPage(p => p + 1)}
-                    disabled={users.length < 25 || loading}
+                    disabled={users.length < 100 || loading}
                     className="p-2 text-gray-400 hover:text-apple-text disabled:opacity-30 disabled:hover:text-gray-400 transition-colors"
                  >
                     <ChevronRight size={24} />
