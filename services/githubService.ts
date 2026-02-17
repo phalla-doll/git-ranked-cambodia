@@ -191,7 +191,7 @@ const fetchGraphQLUserDetails = async (usernames: string[], token: string): Prom
               totalContributions
             }
           }
-          repositories(first: 30, isFork: false, ownerAffiliations: OWNER, orderBy: {field: STARGAZERS, direction: DESC}) {
+          repositories(first: 30, ownerAffiliations: OWNER, orderBy: {field: STARGAZERS, direction: DESC}) {
             totalCount
             nodes {
               stargazerCount

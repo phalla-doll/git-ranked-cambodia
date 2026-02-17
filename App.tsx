@@ -241,8 +241,12 @@ function App() {
   };
 
   // Stats for the top cards
-  const topUser = users.length > 0 ? users[0] : null;
-  const totalFollowers = users.reduce((acc, user) => acc + user.followers, 0);
+  // Scan the current list to find the actual max follower count, 
+  // ensuring the "Top Influence" card is accurate regardless of current sort order.
+  const maxFollowers = users.length > 0 
+    ? Math.max(...users.map(u => u.followers)) 
+    : 0;
+
   const totalRepos = users.reduce((acc, user) => acc + user.public_repos, 0);
 
   return (
@@ -427,7 +431,7 @@ function App() {
           <div className="p-8">
             <StatCard 
               label="Top Influence" 
-              value={topUser ? topUser.followers.toLocaleString() : '-'} 
+              value={users.length > 0 ? maxFollowers.toLocaleString() : '-'} 
             />
           </div>
           <div className="p-8">
