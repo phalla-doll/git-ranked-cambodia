@@ -263,41 +263,51 @@ function App() {
             </div>
           </div>
         </div>
+        
+        {/* API Key Modal Overlay - Moved inside Nav for correct relative positioning */}
+        {showKeyInput && (
+          <div className="absolute top-full left-0 right-0 z-30 bg-white/90 border-b border-gray-200 backdrop-blur-xl animate-in slide-in-from-top-2 shadow-lg">
+             <div className="max-w-7xl mx-auto p-6 flex flex-col md:flex-row items-center gap-4 justify-between">
+               <div className="text-sm text-apple-text">
+                 <p className="font-medium mb-1">GitHub Access Token</p>
+                 <p className="text-gray-500 flex items-center flex-wrap gap-1">
+                   Add a token to increase API rate limits. 
+                   <a 
+                     href="https://github.com/settings/tokens" 
+                     target="_blank" 
+                     rel="noopener noreferrer"
+                     className="text-apple-blue hover:underline inline-flex items-center gap-1 font-medium"
+                   >
+                     Generate one here <ExternalLink size={12} />
+                   </a>
+                 </p>
+               </div>
+               <div className="flex w-full md:w-auto gap-2">
+                 <input 
+                    type="password" 
+                    placeholder="ghp_..." 
+                    value={apiKey}
+                    onChange={(e) => setApiKey(e.target.value)}
+                    className="bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 text-sm w-full md:w-80 focus:outline-none focus:border-apple-blue focus:ring-1 focus:ring-apple-blue transition-all"
+                 />
+                 <button 
+                   onClick={handleSaveApiKey}
+                   className="bg-black hover:bg-gray-800 text-white rounded-lg px-6 py-2 text-sm font-medium transition-colors"
+                 >
+                   Save
+                 </button>
+               </div>
+             </div>
+          </div>
+        )}
       </nav>
-
-      {/* API Key Modal Overlay */}
-      {showKeyInput && (
-        <div className="absolute top-16 right-0 left-0 z-30 bg-white/90 border-b border-gray-200 backdrop-blur-xl animate-in slide-in-from-top-2 shadow-lg">
-           <div className="max-w-7xl mx-auto p-6 flex flex-col md:flex-row items-center gap-4 justify-between">
-             <div className="text-sm text-apple-text">
-               <p className="font-medium mb-1">GitHub Access Token</p>
-               <p className="text-gray-500">Add a token to increase API rate limits.</p>
-             </div>
-             <div className="flex w-full md:w-auto gap-2">
-               <input 
-                  type="password" 
-                  placeholder="ghp_..." 
-                  value={apiKey}
-                  onChange={(e) => setApiKey(e.target.value)}
-                  className="bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 text-sm w-full md:w-80 focus:outline-none focus:border-apple-blue focus:ring-1 focus:ring-apple-blue transition-all"
-               />
-               <button 
-                 onClick={handleSaveApiKey}
-                 className="bg-black hover:bg-gray-800 text-white rounded-lg px-6 py-2 text-sm font-medium transition-colors"
-               >
-                 Save
-               </button>
-             </div>
-           </div>
-        </div>
-      )}
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
         
         {/* Controls Section - Search Only */}
         <div className="flex flex-col md:flex-row gap-8 justify-between items-end">
           <div className="w-full md:max-w-lg">
-             <h1 className="text-3xl font-semibold tracking-tight mb-6">Developer Rankings</h1>
+             <h1 className="text-3xl font-medium tracking-tight mb-6">Developer Rankings</h1>
              <form onSubmit={handleSearch} className="relative group" ref={inputWrapperRef}>
                 <div className="relative shadow-soft rounded-2xl">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
