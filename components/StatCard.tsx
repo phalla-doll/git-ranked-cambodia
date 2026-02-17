@@ -11,7 +11,7 @@ interface StatCardProps {
 
 export const StatCard: React.FC<StatCardProps> = ({ label, value, icon: Icon }) => {
   return (
-    <div className="bg-apple-surface p-6 rounded-2xl shadow-soft border border-white hover:shadow-hover transition-all duration-300 flex flex-col justify-between h-32 group">
+    <div className="bg-apple-surface p-6 rounded-2xl shadow-soft border border-white hover:shadow-hover transition-all duration-300 flex flex-col justify-between group">
       <div className="flex items-start justify-between">
         <div>
            <p className="text-apple-gray text-xs font-medium uppercase tracking-wide mb-1">{label}</p>
