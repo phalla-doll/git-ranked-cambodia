@@ -410,6 +410,18 @@ export const searchUsersInLocation = async (
         return { users: MOCK_USERS_CAMBODIA.slice(0, 100), total_count: 500, rateLimited: true };
     }
 
+    // Sort the detailed users to ensure strict adherence to the requested sort option.
+    // GitHub's search index can sometimes be slightly out of sync with real-time profile data,
+    // causing the list to appear unsorted when displaying fresh data.
+    if (sort === SortOption.FOLLOWERS) {
+      detailedUsers.sort((a, b) => b.followers - a.followers);
+    } else if (sort === SortOption.REPOS) {
+      detailedUsers.sort((a, b) => b.public_repos - a.public_repos);
+    } else if (sort === SortOption.JOINED) {
+      // Newest joined first
+      detailedUsers.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+    }
+
     // Return all users (up to 100) without slicing to 25
     return {
         users: detailedUsers,
