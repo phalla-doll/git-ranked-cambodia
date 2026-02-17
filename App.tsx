@@ -411,24 +411,26 @@ function App() {
           </div>
         </div>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <StatCard 
-            label={getTotalLabel()} 
-            value={totalCount > 0 ? (totalCount > 1000 ? `${(totalCount/1000).toFixed(1)}K+` : totalCount) : 0} 
-            icon={Users} 
-          />
-          <StatCard 
-            label="Top Influence" 
-            value={topUser ? topUser.followers.toLocaleString() : '-'} 
-            icon={Activity}
-            trend={topUser ? topUser.login : ''}
-          />
-          <StatCard 
-            label="Total Repositories" 
-            value={totalRepos.toLocaleString()} 
-            icon={GitBranch} 
-          />
+        {/* Stats Grid Box */}
+        <div className="grid grid-cols-1 md:grid-cols-3 bg-white rounded-3xl border border-gray-200 divide-y md:divide-y-0 md:divide-x divide-gray-200 shadow-sm overflow-hidden">
+          <div className="p-8">
+            <StatCard 
+              label={getTotalLabel()} 
+              value={totalCount > 0 ? (totalCount > 1000 ? `${(totalCount/1000).toFixed(1)}K+` : totalCount) : 0} 
+            />
+          </div>
+          <div className="p-8">
+            <StatCard 
+              label="Top Influence" 
+              value={topUser ? topUser.followers.toLocaleString() : '-'} 
+            />
+          </div>
+          <div className="p-8">
+            <StatCard 
+              label="Total Repositories" 
+              value={totalRepos.toLocaleString()} 
+            />
+          </div>
         </div>
 
         {/* Main Content Area - Full Width */}

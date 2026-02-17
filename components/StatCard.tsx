@@ -4,22 +4,20 @@ import { LucideIcon } from 'lucide-react';
 interface StatCardProps {
   label: string;
   value: string | number;
-  icon: LucideIcon;
+  icon?: LucideIcon; // Made optional
   trend?: string;
-  color?: string; // Kept for API compatibility, but usually ignored in minimal theme
+  color?: string; 
 }
 
-export const StatCard: React.FC<StatCardProps> = ({ label, value, icon: Icon }) => {
+export const StatCard: React.FC<StatCardProps> = ({ label, value }) => {
   return (
-    <div className="bg-apple-surface p-6 rounded-2xl shadow-soft border border-white hover:shadow-hover transition-all duration-300 flex flex-col justify-between group">
-      <div className="flex items-start justify-between">
-        <div>
-           <p className="text-apple-gray text-xs font-medium uppercase tracking-wide mb-1">{label}</p>
-           <h3 className="text-3xl font-medium text-apple-text tracking-tight -ml-0.5">{value}</h3>
-        </div>
-        <div className="p-2 bg-gray-50 rounded-full text-apple-gray group-hover:text-apple-blue group-hover:bg-blue-50 transition-colors">
-            <Icon size={20} />
-        </div>
+    <div className="flex flex-col h-full justify-between items-start gap-4">
+      <h3 className="text-6xl sm:text-7xl font-normal text-apple-text tracking-tighter leading-none">
+        {value}
+      </h3>
+      <div className="flex items-center gap-2">
+        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+        <p className="text-gray-500 text-sm font-medium">{label}</p>
       </div>
     </div>
   );
