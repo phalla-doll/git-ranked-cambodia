@@ -540,7 +540,14 @@ function App() {
           </div>
           <div className="text-sm text-gray-500 flex items-center gap-1.5">
             <span>Created as a hobby and maintained by</span>
-            <span className="font-semibold text-gray-900 bg-gray-100 px-2 py-0.5 rounded-md">Mantha</span>
+            <a 
+              href="https://manthaa.dev/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="font-semibold text-gray-900 bg-gray-100 px-2 py-0.5 rounded-md hover:bg-gray-200 transition-colors"
+            >
+              Mantha
+            </a>
           </div>
         </div>
       </footer>
