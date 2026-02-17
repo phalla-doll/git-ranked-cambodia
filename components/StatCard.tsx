@@ -27,11 +27,11 @@ export const StatCard: React.FC<StatCardProps> = ({ label, value, icon: Icon, tr
             <div className={`p-2 bg-dark-bg border border-dark-border ${color}`}>
                 <Icon size={18} />
             </div>
-            <p className="text-dark-text text-xs font-medium uppercase tracking-wide">{label}</p>
+            <p className="text-dark-text text-xs font-normal uppercase tracking-wide">{label}</p>
         </div>
-        <h3 className="text-3xl font-bold text-dark-heading tracking-tight">{value}</h3>
+        <h3 className="text-3xl font-semibold text-dark-heading tracking-tight">{value}</h3>
         {trend && (
-          <p className="text-xs text-dark-text/70 mt-2 font-medium">
+          <p className="text-xs text-dark-text/70 mt-2 font-normal">
             {trend}
           </p>
         )}

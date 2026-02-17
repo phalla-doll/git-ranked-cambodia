@@ -47,7 +47,7 @@ export const UserModal: React.FC<UserModalProps> = ({ user, isOpen, onClose }) =
               href={user.html_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="mb-1 px-4 py-2 bg-neon-500 text-white text-xs font-bold hover:bg-neon-400 transition-all flex items-center gap-2 shadow-lg shadow-neon-500/20"
+              className="mb-1 px-4 py-2 bg-neon-500 text-white text-xs font-medium hover:bg-neon-400 transition-all flex items-center gap-2 shadow-lg shadow-neon-500/20"
             >
               <Github size={14} />
               View Profile
@@ -55,7 +55,7 @@ export const UserModal: React.FC<UserModalProps> = ({ user, isOpen, onClose }) =
           </div>
 
           <div className="mb-6">
-            <h2 className="text-2xl font-bold text-white tracking-tight">{user.name || user.login}</h2>
+            <h2 className="text-2xl font-semibold text-white tracking-tight">{user.name || user.login}</h2>
             <div className="flex items-center gap-2 text-dark-text text-sm mt-1">
                <span className="opacity-50">@</span>
                <span className="font-medium">{user.login}</span>
@@ -63,29 +63,29 @@ export const UserModal: React.FC<UserModalProps> = ({ user, isOpen, onClose }) =
           </div>
 
           {user.bio && (
-            <p className="text-dark-text/80 mb-6 text-sm leading-relaxed">
+            <p className="text-dark-text/80 mb-6 text-sm leading-relaxed font-normal">
               {user.bio}
             </p>
           )}
 
           <div className="grid grid-cols-4 gap-2 mb-8 bg-dark-bg p-4 border border-dark-border">
             <div className="text-center">
-              <div className="text-lg font-bold text-white">{user.public_repos}</div>
-              <div className="text-[9px] text-dark-text uppercase font-semibold mt-1">Repos</div>
+              <div className="text-lg font-semibold text-white">{user.public_repos}</div>
+              <div className="text-[9px] text-dark-text uppercase font-medium mt-1">Repos</div>
             </div>
             <div className="text-center border-l border-dark-border">
-              <div className="text-lg font-bold text-white">{user.followers}</div>
-              <div className="text-[9px] text-dark-text uppercase font-semibold mt-1">Followers</div>
+              <div className="text-lg font-semibold text-white">{user.followers}</div>
+              <div className="text-[9px] text-dark-text uppercase font-medium mt-1">Followers</div>
             </div>
             <div className="text-center border-l border-dark-border">
-              <div className="text-lg font-bold text-white">{user.following}</div>
-              <div className="text-[9px] text-dark-text uppercase font-semibold mt-1">Following</div>
+              <div className="text-lg font-semibold text-white">{user.following}</div>
+              <div className="text-[9px] text-dark-text uppercase font-medium mt-1">Following</div>
             </div>
             <div className="text-center border-l border-dark-border">
-              <div className="text-lg font-bold text-neon-400">
+              <div className="text-lg font-semibold text-neon-400">
                   {user.recent_activity_count !== undefined ? user.recent_activity_count : '-'}
               </div>
-              <div className="text-[9px] text-dark-text uppercase font-semibold mt-1">Activity</div>
+              <div className="text-[9px] text-dark-text uppercase font-medium mt-1">Activity</div>
             </div>
           </div>
 

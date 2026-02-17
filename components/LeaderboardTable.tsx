@@ -27,7 +27,7 @@ export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({ users, sortB
              <div className="absolute inset-0 rounded-full border-2 border-neon-500/20 border-t-neon-500 animate-spin"></div>
              <Activity className="text-neon-400" size={24} />
           </div>
-          <p className="text-white font-semibold text-lg tracking-tight">Scanning GitHub Registry...</p>
+          <p className="text-white font-medium text-lg tracking-tight">Scanning GitHub Registry...</p>
           <p className="text-dark-text text-xs mt-2 font-mono text-center max-w-xs">
             Fetching developer profiles and analyzing public metrics.
           </p>
@@ -45,7 +45,7 @@ export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({ users, sortB
             <div className="w-16 h-16 bg-dark-bg rounded-full flex items-center justify-center border border-red-500/30 mb-6 shadow-[0_0_20px_rgba(239,68,68,0.2)]">
                 <AlertTriangle className="text-red-500" size={32} />
             </div>
-            <h3 className="text-white font-bold text-xl mb-2">Connection Interrupted</h3>
+            <h3 className="text-white font-semibold text-xl mb-2">Connection Interrupted</h3>
             <p className="text-red-200/70 text-sm max-w-md mb-6 border border-red-500/20 bg-dark-bg p-3 font-mono rounded">
                {error}
             </p>
@@ -64,7 +64,7 @@ export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({ users, sortB
         <div className="w-20 h-20 bg-dark-bg flex items-center justify-center mb-6 border border-dark-border shadow-inner">
             <SearchX size={40} className="text-dark-text opacity-50" />
         </div>
-        <h3 className="text-white font-semibold text-xl">No Developers Found</h3>
+        <h3 className="text-white font-medium text-xl">No Developers Found</h3>
         <p className="text-dark-text mt-2 max-w-sm text-center text-sm">
           We couldn't find any public profiles matching your location filter. Try broadening your search terms.
         </p>
@@ -83,7 +83,7 @@ export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({ users, sortB
              <div className="absolute inset-0 bg-gradient-to-r from-neon-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
 
              {/* Rank Badge */}
-             <div className={`absolute top-0 left-0 z-10 px-3 py-1 text-xs font-bold border-r border-b border-dark-border font-mono shadow-sm
+             <div className={`absolute top-0 left-0 z-10 px-3 py-1 text-xs font-semibold border-r border-b border-dark-border font-mono shadow-sm
                 ${index === 0 ? 'bg-neon-500 text-white' : 
                   index === 1 ? 'bg-white text-dark-bg' : 
                   index === 2 ? 'bg-dark-text text-white' : 'bg-dark-bg text-dark-text'}`}>
@@ -111,7 +111,7 @@ export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({ users, sortB
                     
                     <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2 flex-wrap">
-                          <h3 className="text-lg sm:text-xl font-bold text-white truncate group-hover:text-neon-400 transition-colors">
+                          <h3 className="text-lg sm:text-xl font-semibold text-white truncate group-hover:text-neon-400 transition-colors">
                               {user.name || user.login}
                           </h3>
                           <span className="text-sm text-dark-text font-mono">@{user.login}</span>

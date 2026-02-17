@@ -19,7 +19,7 @@ const StatBox = ({
   highlight?: boolean 
 }) => (
   <div className={`flex flex-col items-center justify-center p-2 sm:p-3 min-w-[70px] sm:min-w-[80px] h-full transition-colors ${highlight ? 'bg-neon-500/10' : 'bg-dark-bg/50 hover:bg-dark-bg'}`}>
-    <span className={`text-sm sm:text-base font-bold ${highlight ? 'text-neon-400' : 'text-white'}`}>
+    <span className={`text-sm sm:text-base font-semibold ${highlight ? 'text-neon-400' : 'text-white'}`}>
       {typeof value === 'number' ? value.toLocaleString() : value}
     </span>
     <div className="flex items-center gap-1 mt-1">

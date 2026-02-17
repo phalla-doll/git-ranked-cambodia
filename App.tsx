@@ -197,13 +197,13 @@ function App() {
            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <AlertCircle size={16} className="text-red-400" />
-                <span className="text-xs font-medium text-red-200">
+                <span className="text-xs font-normal text-red-200">
                   Rate limit reached. Showing cached data.
                 </span>
               </div>
               <button 
                 onClick={() => setShowKeyInput(true)}
-                className="text-[10px] font-bold bg-red-500/20 hover:bg-red-500/30 text-red-100 px-3 py-1 transition-colors"
+                className="text-[10px] font-semibold bg-red-500/20 hover:bg-red-500/30 text-red-100 px-3 py-1 transition-colors"
               >
                 FIX NOW
               </button>
@@ -220,10 +220,10 @@ function App() {
                   <Terminal className="text-white h-5 w-5" />
                </div>
                <div className="flex flex-col">
-                  <span className="font-bold text-lg text-white leading-none">
+                  <span className="font-semibold text-lg text-white leading-none">
                     GitRanked
                   </span>
-                  <span className="text-[10px] font-medium text-dark-text mt-1">
+                  <span className="text-[10px] font-normal text-dark-text mt-1">
                     Developer Insights
                   </span>
                </div>
@@ -236,7 +236,7 @@ function App() {
                 <input 
                   type="text"
                   placeholder="Search user..."
-                  className="bg-transparent border-none focus:outline-none text-sm w-full text-white placeholder-dark-text/50 font-medium"
+                  className="bg-transparent border-none focus:outline-none text-sm w-full text-white placeholder-dark-text/50 font-normal"
                   value={userSearchQuery}
                   onChange={(e) => setUserSearchQuery(e.target.value)}
                   onKeyDown={handleUserSearchKeyDown}
@@ -275,11 +275,11 @@ function App() {
                   placeholder="Paste ghp_... token here" 
                   value={apiKey}
                   onChange={(e) => setApiKey(e.target.value)}
-                  className="bg-dark-bg border border-dark-border px-4 py-2 text-sm w-full md:w-80 focus:outline-none focus:border-neon-500 text-white"
+                  className="bg-dark-bg border border-dark-border px-4 py-2 text-sm w-full md:w-80 focus:outline-none focus:border-neon-500 text-white font-normal"
                />
                <button 
                  onClick={handleSaveApiKey}
-                 className="bg-neon-500 hover:bg-neon-400 text-white px-6 py-2 text-sm font-semibold transition-colors"
+                 className="bg-neon-500 hover:bg-neon-400 text-white px-6 py-2 text-sm font-medium transition-colors"
                >
                  Save
                </button>
@@ -293,7 +293,7 @@ function App() {
         {/* Controls Section */}
         <div className="flex flex-col md:flex-row gap-6 justify-between items-end">
           <div className="w-full md:max-w-md">
-             <label className="text-xs font-semibold text-dark-text uppercase mb-2 block ml-1">Location Scope</label>
+             <label className="text-xs font-medium text-dark-text uppercase mb-2 block ml-1">Location Scope</label>
              <form onSubmit={handleSearch} className="relative group" ref={inputWrapperRef}>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -301,7 +301,7 @@ function App() {
                   </div>
                   <input
                     type="text"
-                    className="block w-full pl-12 pr-4 py-3.5 bg-dark-surface border border-dark-border text-white placeholder-dark-text focus:outline-none focus:border-neon-500 focus:ring-1 focus:ring-neon-500/20 transition-all font-medium text-lg shadow-sm"
+                    className="block w-full pl-12 pr-4 py-3.5 bg-dark-surface border border-dark-border text-white placeholder-dark-text focus:outline-none focus:border-neon-500 focus:ring-1 focus:ring-neon-500/20 transition-all font-normal text-lg shadow-sm"
                     placeholder="Enter location..."
                     value={location}
                     onChange={handleLocationChange}
@@ -311,7 +311,7 @@ function App() {
                     autoComplete="off"
                   />
                   <div className="absolute inset-y-1.5 right-1.5">
-                    <button type="submit" className="h-full px-5 bg-neon-500 hover:bg-neon-400 text-white text-sm font-semibold transition-colors shadow-lg shadow-neon-500/20">
+                    <button type="submit" className="h-full px-5 bg-neon-500 hover:bg-neon-400 text-white text-sm font-medium transition-colors shadow-lg shadow-neon-500/20">
                       Update
                     </button>
                   </div>
@@ -386,13 +386,13 @@ function App() {
           {/* Main Leaderboard */}
           <div className="lg:col-span-2 space-y-5">
              <div className="flex items-center justify-between px-1">
-                <h2 className="text-lg font-semibold text-white flex items-center gap-2">
+                <h2 className="text-lg font-medium text-white flex items-center gap-2">
                   <Trophy className="text-neon-400" size={18} />
                   Top Ranked
                 </h2>
                 <div className="flex items-center gap-2 px-3 py-1 bg-neon-500/10 border border-neon-500/20">
                    <div className="w-1.5 h-1.5 bg-neon-500 animate-pulse"></div>
-                   <span className="text-[10px] font-bold text-neon-400 uppercase tracking-wide">Live Data</span>
+                   <span className="text-[10px] font-semibold text-neon-400 uppercase tracking-wide">Live Data</span>
                 </div>
              </div>
              <LeaderboardTable users={users} sortBy={sortBy} loading={loading} error={error} />
@@ -407,7 +407,7 @@ function App() {
               <div className="absolute bottom-0 left-0 w-2 h-2 border-l-2 border-b-2 border-dark-text/30"></div>
               <div className="absolute bottom-0 right-0 w-2 h-2 border-r-2 border-b-2 border-dark-text/30"></div>
 
-              <h3 className="text-sm font-semibold text-white mb-6 flex items-center justify-between">
+              <h3 className="text-sm font-medium text-white mb-6 flex items-center justify-between">
                 <span>Distribution</span>
                 <span className="text-xs text-dark-text font-normal">Top 7</span>
               </h3>
@@ -458,11 +458,11 @@ function App() {
                <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-1 transition-opacity">
                  <Cpu size={120} />
                </div>
-               <h3 className="text-sm font-semibold text-white mb-2 relative z-10">Ranking Logic</h3>
-               <p className="text-dark-text text-xs leading-relaxed relative z-10 mb-4">
+               <h3 className="text-sm font-medium text-white mb-2 relative z-10">Ranking Logic</h3>
+               <p className="text-dark-text text-xs leading-relaxed relative z-10 mb-4 font-normal">
                  Our ranking algorithm prioritizes community engagement (Followers) and public output (Repositories) as key signals of developer influence.
                </p>
-               <div className="inline-flex items-center gap-2 text-[10px] font-bold text-neon-400 bg-neon-500/10 px-3 py-1.5 border border-neon-500/20">
+               <div className="inline-flex items-center gap-2 text-[10px] font-semibold text-neon-400 bg-neon-500/10 px-3 py-1.5 border border-neon-500/20">
                   <Activity size={12} />
                   <span>ALGORITHM V2.1 ACTIVE</span>
                </div>
