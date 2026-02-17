@@ -34,7 +34,12 @@ function escapeRegExp(string: string) {
 
 function App() {
   const [location, setLocation] = useState('Cambodia');
-  const [apiKey, setApiKey] = useState('');
+  const [apiKey, setApiKey] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('gitranked_api_key') || '';
+    }
+    return '';
+  });
   const [showKeyInput, setShowKeyInput] = useState(false);
   const [users, setUsers] = useState<GitHubUserDetail[]>([]);
   const [loading, setLoading] = useState(false);
@@ -149,6 +154,16 @@ function App() {
     }
   };
 
+  const handleSaveApiKey = () => {
+    if (apiKey.trim()) {
+      localStorage.setItem('gitranked_api_key', apiKey.trim());
+    } else {
+      localStorage.removeItem('gitranked_api_key');
+    }
+    setShowKeyInput(false);
+    fetchUsers();
+  };
+
   // Stats for the top cards
   const topUser = users.length > 0 ? users[0] : null;
   const totalFollowers = users.reduce((acc, user) => acc + user.followers, 0);
@@ -246,7 +261,7 @@ function App() {
                    Generate Token <ExternalLink size={12} />
                  </a>
                </div>
-               <p className="text-xs text-slate-500">Increases rate limit from 60 to 5000 requests/hour. Stored only in memory.</p>
+               <p className="text-xs text-slate-500">Increases rate limit from 60 to 5000 requests/hour. Stored locally in your browser.</p>
              </div>
              <div className="flex w-full sm:w-auto gap-2">
                <input 
@@ -257,7 +272,7 @@ function App() {
                   className="bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm w-full sm:w-64 focus:outline-none focus:border-indigo-500"
                />
                <button 
-                 onClick={() => { setShowKeyInput(false); fetchUsers(); }}
+                 onClick={handleSaveApiKey}
                  className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded text-sm font-medium transition-colors"
                >
                  Save & Reload
