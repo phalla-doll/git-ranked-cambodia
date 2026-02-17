@@ -156,8 +156,8 @@ const chunkArray = (arr: any[], size: number) => {
 
 // Fetch details for multiple users via GraphQL to save requests and get accurate contribution data
 const fetchGraphQLUserDetails = async (usernames: string[], token: string): Promise<Record<string, GitHubUserDetail>> => {
-  // We can't query too many at once due to complexity limits, but 20-25 should be safe for this specific query.
-  const chunks = chunkArray(usernames, 25);
+  // Reduced chunk size to 10 to avoid complexity timeouts or limits with contributionCalendar
+  const chunks = chunkArray(usernames, 10);
   let allUsers: Record<string, GitHubUserDetail> = {};
 
   for (const chunk of chunks) {
@@ -229,6 +229,8 @@ const fetchGraphQLUserDetails = async (usernames: string[], token: string): Prom
              };
            }
         });
+      } else if (result.errors) {
+         console.warn("GraphQL errors:", result.errors);
       }
     } catch (e) {
       console.warn("GraphQL chunk fetch failed", e);
@@ -266,6 +268,7 @@ export const getUserByName = async (username: string, apiKey?: string): Promise<
     const user = await response.json() as GitHubUserDetail;
     
     // Fetch activity Proxy via REST Events (Inaccurate but works without token)
+    // For single user, this is acceptable
     try {
        const eventsRes = await fetch(`${BASE_URL}/users/${username}/events?per_page=100`, { headers });
        if (eventsRes.ok) {
@@ -310,6 +313,7 @@ export const searchUsersInLocation = async (
     if (!searchRes.ok) {
         if (searchRes.status === 403 || searchRes.status === 429) {
              console.warn("Rate limited. Returning mock data.");
+             // Simulated delay
              await new Promise(resolve => setTimeout(resolve, 800));
              
              let mockUsers = [...MOCK_USERS_CAMBODIA];
@@ -342,38 +346,30 @@ export const searchUsersInLocation = async (
        // This gets the REAL contribution count (green squares)
        try {
          const usersMap = await fetchGraphQLUserDetails(usernames, apiKey);
-         detailedUsers = Object.values(usersMap);
          
-         // Maintain order from search result if possible, or just re-sort below
+         // IMPORTANT: Map back to the original `usernames` array to maintain the sort order from the Search API
+         detailedUsers = usernames
+            .map(login => usersMap[login.toLowerCase()] || null)
+            .filter((u): u is GitHubUserDetail => u !== null);
+
        } catch (e) {
          console.error("GraphQL hydration failed", e);
-         // If GraphQL fails, detailedUsers is empty, code will fall through? 
-         // Ideally we should fallback to REST loop below, but simpler to return error or empty.
-         // Let's assume if provided token is valid, this works.
        }
     } 
     
     if (detailedUsers.length === 0) {
        // STRATEGY B: Fallback via REST (No Token or GraphQL failed)
-       // Fetches details one by one and estimates activity from public events
+       // Fetches details one by one.
+       // NOTE: We do NOT fetch events here for the full list to avoid instant rate limiting.
         const detailPromises = searchData.items.map(async (item: GitHubUserSummary) => {
             try {
                 const detailRes = await fetch(`${BASE_URL}/users/${item.login}`, { headers });
                 if (!detailRes.ok) return null;
                 const userDetail = await detailRes.json() as GitHubUserDetail;
 
-                // Estimate activity
-                try {
-                    const eventsRes = await fetch(`${BASE_URL}/users/${item.login}/events?per_page=100`, { headers });
-                    if (eventsRes.ok) {
-                        const events = await eventsRes.json();
-                        userDetail.recent_activity_count = calculateCommitsFromEvents(events);
-                    } else {
-                        userDetail.recent_activity_count = 0;
-                    }
-                } catch (e) {
-                    userDetail.recent_activity_count = 0;
-                }
+                // In list view without token, we cannot afford 50 event calls.
+                // Leave recent_activity_count undefined so UI shows '-' instead of 0.
+                // This is more honest than showing 0 when we didn't check.
                 return userDetail;
             } catch (e) {
                 return null;
@@ -387,7 +383,7 @@ export const searchUsersInLocation = async (
         return { users: MOCK_USERS_CAMBODIA, total_count: 500, rateLimited: true };
     }
 
-    // Sort locally based on the fetched high-fidelity data
+    // Sort locally based on the fetched high-fidelity data if we have it
     if (sort === SortOption.CONTRIBUTIONS) {
         detailedUsers.sort((a, b) => (b.recent_activity_count || 0) - (a.recent_activity_count || 0));
     }
