@@ -16,7 +16,9 @@ import {
   Trophy,
   ArrowRight,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Eye,
+  EyeOff
 } from 'lucide-react';
 import { GitHubUserDetail, SortOption } from './types';
 import { searchUsersInLocation, getUserByName } from './services/githubService';
@@ -34,6 +36,7 @@ function App() {
     return '';
   });
   const [showKeyInput, setShowKeyInput] = useState(false);
+  const [showToken, setShowToken] = useState(false);
   const [users, setUsers] = useState<GitHubUserDetail[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -266,7 +269,7 @@ function App() {
         
         {/* API Key Modal Overlay - Moved inside Nav for correct relative positioning */}
         {showKeyInput && (
-          <div className="absolute top-full left-0 right-0 z-30 bg-white/90 border-b border-gray-200 backdrop-blur-xl animate-in slide-in-from-top-2 shadow-lg">
+          <div className="absolute top-full left-0 right-0 z-30 bg-white border-b border-gray-200 shadow-lg animate-in slide-in-from-top-2">
              <div className="max-w-7xl mx-auto p-6 flex flex-col md:flex-row items-center gap-4 justify-between">
                <div className="text-sm text-apple-text">
                  <p className="font-medium mb-1">GitHub Access Token</p>
@@ -282,14 +285,23 @@ function App() {
                    </a>
                  </p>
                </div>
-               <div className="flex w-full md:w-auto gap-2">
-                 <input 
-                    type="password" 
-                    placeholder="ghp_..." 
-                    value={apiKey}
-                    onChange={(e) => setApiKey(e.target.value)}
-                    className="bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 text-sm w-full md:w-80 focus:outline-none focus:border-apple-blue focus:ring-1 focus:ring-apple-blue transition-all"
-                 />
+               <div className="flex w-full md:w-auto gap-2 items-center">
+                 <div className="relative w-full md:w-80">
+                   <input 
+                      type={showToken ? "text" : "password"}
+                      placeholder="ghp_..." 
+                      value={apiKey}
+                      onChange={(e) => setApiKey(e.target.value)}
+                      className="bg-gray-50 border border-gray-200 rounded-lg pl-4 pr-10 py-2 text-sm w-full focus:outline-none focus:border-apple-blue focus:ring-1 focus:ring-apple-blue transition-all"
+                   />
+                   <button
+                    type="button"
+                    onClick={() => setShowToken(!showToken)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                   >
+                     {showToken ? <EyeOff size={14} /> : <Eye size={14} />}
+                   </button>
+                 </div>
                  <button 
                    onClick={handleSaveApiKey}
                    className="bg-black hover:bg-gray-800 text-white rounded-lg px-6 py-2 text-sm font-medium transition-colors"
@@ -424,35 +436,4 @@ function App() {
                  <button
                     onClick={() => setPage(p => p + 1)}
                     disabled={users.length < 25 || loading}
-                    className="p-2 text-gray-400 hover:text-apple-text disabled:opacity-30 disabled:hover:text-gray-400 transition-colors"
-                 >
-                    <ChevronRight size={24} />
-                 </button>
-              </div>
-            )}
-            
-            {/* Self-check prompt */}
-            <div className="bg-blue-50 rounded-2xl p-6 flex items-center justify-between border border-blue-100 mt-6">
-              <div>
-                <h4 className="font-medium text-apple-blue mb-1">Are you a developer in {location}?</h4>
-                <p className="text-sm text-blue-800/70 max-w-sm">
-                  If you don't see yourself here, try searching for your username directly in the top bar to verify your stats.
-                </p>
-              </div>
-              <div className="hidden sm:block p-3 bg-white rounded-full text-apple-blue shadow-sm">
-                  <ArrowRight size={20} />
-              </div>
-            </div>
-        </div>
-
-        <UserModal 
-          user={modalUser} 
-          isOpen={isModalOpen} 
-          onClose={() => setIsModalOpen(false)} 
-        />
-      </main>
-    </div>
-  );
-}
-
-export default App;
+                    className="p-2 text-gray
