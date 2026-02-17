@@ -326,12 +326,12 @@ function App() {
              <form onSubmit={handleSearch} className="relative group" ref={inputWrapperRef}>
                 <div className="relative shadow-soft rounded-2xl">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <MapPin className="h-5 w-5 text-gray-400" />
+                    <Search className="h-5 w-5 text-gray-400" />
                   </div>
                   <input
                     type="text"
                     className="block w-full pl-12 pr-4 py-4 bg-white rounded-2xl border-0 ring-1 ring-gray-200 text-apple-text placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-apple-blue/50 transition-all font-medium text-lg"
-                    placeholder="Enter location..."
+                    placeholder="Search users (e.g. location, name)..."
                     value={location}
                     onChange={handleLocationChange}
                     onFocus={() => {
@@ -452,9 +452,9 @@ function App() {
             {/* Self-check prompt */}
             <div className="bg-blue-50 rounded-2xl p-6 flex items-center justify-between border border-blue-100 mt-6">
               <div>
-                <h4 className="font-medium text-apple-blue mb-1">Are you a developer in {location}?</h4>
+                <h4 className="font-medium text-apple-blue mb-1">Don't see yourself listed?</h4>
                 <p className="text-sm text-blue-800/70 max-w-sm">
-                  If you don't see yourself here, try searching for your username directly in the top bar to verify your stats.
+                  Try searching for your exact username in the search bar above to verify your stats.
                 </p>
               </div>
               <div className="hidden sm:block p-3 bg-white rounded-full text-apple-blue shadow-sm">

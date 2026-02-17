@@ -314,7 +314,7 @@ export const getUserByName = async (username: string, apiKey?: string): Promise<
 };
 
 export const searchUsersInLocation = async (
-  location: string,
+  query: string,
   sort: SortOption,
   page: number = 1,
   apiKey?: string
@@ -329,7 +329,11 @@ export const searchUsersInLocation = async (
   }
   
   try {
-    const q = `location:${location} type:user`;
+    // UPDATED: No longer strictly filtering by location.
+    // This allows the user to search by username, name, or location freely.
+    // Searching "Cambodia" will still work (matching location/bio), 
+    // but searching "john" will now find users named John.
+    const q = `${query} type:user`;
     
     // Limit to 30 to avoid hitting the 60 req/hr limit during hydration
     const fetchSize = 30;
