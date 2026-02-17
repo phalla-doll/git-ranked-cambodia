@@ -97,7 +97,7 @@ const BASE_MOCK_USERS: GitHubUserDetail[] = [
   }
 ];
 
-// Generate 50 mock users
+// Generate 100 mock users for better pagination testing
 const generateMockUsers = (count: number): GitHubUserDetail[] => {
   const users = [...BASE_MOCK_USERS];
   const companies = ["Freelance", "TechKhmer", "StartupKH", "AngkorDev", "MekongSoft", "Smart Axiata", null];
@@ -129,7 +129,7 @@ const generateMockUsers = (count: number): GitHubUserDetail[] => {
   return users.sort((a, b) => b.followers - a.followers);
 };
 
-const MOCK_USERS_CAMBODIA = generateMockUsers(50);
+const MOCK_USERS_CAMBODIA = generateMockUsers(100);
 
 // Fallback logic for REST API (when no token is provided)
 const calculateCommitsFromEvents = (events: any[]): number => {
@@ -306,7 +306,8 @@ export const searchUsersInLocation = async (
     const apiSort = sort === SortOption.CONTRIBUTIONS ? 'repositories' : sort;
     
     // 1. Get the list of users via REST Search (Best for finding by location)
-    const searchUrl = `${BASE_URL}/search/users?q=${encodeURIComponent(q)}&sort=${apiSort}&order=desc&per_page=50&page=${page}`;
+    // Reduce to 25 items per page
+    const searchUrl = `${BASE_URL}/search/users?q=${encodeURIComponent(q)}&sort=${apiSort}&order=desc&per_page=25&page=${page}`;
     
     const searchRes = await fetch(searchUrl, { headers });
 
@@ -325,7 +326,11 @@ export const searchUsersInLocation = async (
                  mockUsers.sort((a, b) => b.public_repos - a.public_repos);
              }
              
-             return { users: mockUsers, total_count: 500, rateLimited: true }; 
+             // Handle Pagination for Mock Data
+             const start = (page - 1) * 25;
+             const paginatedMock = mockUsers.slice(start, start + 25);
+
+             return { users: paginatedMock, total_count: mockUsers.length, rateLimited: true }; 
         }
         return { 
           users: [], 
@@ -380,7 +385,7 @@ export const searchUsersInLocation = async (
     
     // Check for rate limits during detail fetching
     if (detailedUsers.length === 0 && searchData.items.length > 0) {
-        return { users: MOCK_USERS_CAMBODIA, total_count: 500, rateLimited: true };
+        return { users: MOCK_USERS_CAMBODIA.slice(0, 25), total_count: 500, rateLimited: true };
     }
 
     // Sort locally based on the fetched high-fidelity data if we have it

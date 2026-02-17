@@ -14,18 +14,10 @@ import {
   Cpu,
   LayoutDashboard,
   Trophy,
-  ArrowRight
+  ArrowRight,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
-import { 
-  BarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  ResponsiveContainer,
-  Cell
-} from 'recharts';
 import { GitHubUserDetail, SortOption } from './types';
 import { searchUsersInLocation, getUserByName } from './services/githubService';
 import { StatCard } from './components/StatCard';
@@ -48,6 +40,9 @@ function App() {
   const [sortBy, setSortBy] = useState<SortOption>(SortOption.FOLLOWERS);
   const [totalCount, setTotalCount] = useState(0);
   const [rateLimitHit, setRateLimitHit] = useState(false);
+  
+  // Pagination State
+  const [page, setPage] = useState(1);
 
   // Autocomplete State
   const [suggestions, setSuggestions] = useState<string[]>([]);
@@ -79,14 +74,14 @@ function App() {
   }, []);
 
   // Main search function
-  const fetchUsers = useCallback(async (loc: string = location) => {
+  const fetchUsers = useCallback(async (loc: string = location, p: number = 1) => {
     setLoading(true);
     setUsers([]); 
     setError(null);
     setRateLimitHit(false);
     setShowSuggestions(false);
     try {
-      const { users: fetchedUsers, total_count, rateLimited, error: apiError } = await searchUsersInLocation(loc, sortBy, 1, apiKey);
+      const { users: fetchedUsers, total_count, rateLimited, error: apiError } = await searchUsersInLocation(loc, sortBy, p, apiKey);
       
       if (apiError) {
         setError(apiError);
@@ -105,19 +100,29 @@ function App() {
 
   // Initial load
   useEffect(() => {
-    fetchUsers();
+    fetchUsers(location, page);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); 
 
-  // Reload when sort or api key changes, but NOT when location changes (wait for submit)
+  // Reload when sort or api key changes, resetting page to 1
   useEffect(() => {
-    fetchUsers();
+    setPage(1);
+    fetchUsers(location, 1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sortBy, apiKey]);
 
+  // Reload when page changes
+  useEffect(() => {
+    if (page > 1) { // Skip initial load handled above
+       fetchUsers(location, page);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page]);
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    fetchUsers();
+    setPage(1);
+    fetchUsers(location, 1);
   };
 
   const handleLocationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -139,7 +144,8 @@ function App() {
   const handleSelectSuggestion = (suggestion: string) => {
     setLocation(suggestion);
     setShowSuggestions(false);
-    fetchUsers(suggestion);
+    setPage(1);
+    fetchUsers(suggestion, 1);
   };
 
   const handleUserSearchKeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -170,7 +176,8 @@ function App() {
       localStorage.removeItem('gitranked_api_key');
     }
     setShowKeyInput(false);
-    fetchUsers();
+    setPage(1);
+    fetchUsers(location, 1);
   };
 
   const getListTitle = () => {
@@ -188,15 +195,8 @@ function App() {
   const totalFollowers = users.reduce((acc, user) => acc + user.followers, 0);
   const totalRepos = users.reduce((acc, user) => acc + user.public_repos, 0);
 
-  // Data for Chart
-  const chartData = users.slice(0, 7).map(u => ({
-    name: u.login,
-    followers: u.followers,
-    repos: u.public_repos
-  }));
-
   return (
-    <div className="min-h-screen font-sans text-apple-text bg-apple-bg selection:bg-apple-blue selection:text-white">
+    <div className="min-h-screen font-sans text-apple-text bg-apple-bg selection:bg-apple-blue selection:text-white pb-20">
       
       {/* Rate Limit Banner */}
       {rateLimitHit && (
@@ -384,83 +384,58 @@ function App() {
           />
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Leaderboard */}
-          <div className="lg:col-span-2 space-y-4">
-             <div className="flex items-center justify-between px-1">
-                <h2 className="text-lg font-bold text-apple-text">{getListTitle()}</h2>
-             </div>
-             <LeaderboardTable users={users} sortBy={sortBy} loading={loading} error={error} />
-             
-             {/* Self-check prompt */}
-             <div className="bg-blue-50 rounded-2xl p-6 flex items-center justify-between mt-4 border border-blue-100">
-                <div>
-                  <h4 className="font-semibold text-apple-blue mb-1">Are you a developer in {location}?</h4>
-                  <p className="text-sm text-blue-800/70 max-w-sm">
-                    If you don't see yourself here, try searching for your username directly in the top bar to verify your stats.
-                  </p>
-                </div>
-                <div className="hidden sm:block p-3 bg-white rounded-full text-apple-blue shadow-sm">
-                   <ArrowRight size={20} />
-                </div>
-             </div>
-          </div>
-
-          {/* Sidebar / Charts */}
-          <div className="space-y-6">
-            <div className="bg-white rounded-3xl p-6 shadow-soft border border-gray-100">
-              <h3 className="text-sm font-semibold text-apple-text mb-6">Follower Distribution</h3>
-              <div className="h-64 w-full">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={chartData} layout="vertical" margin={{ left: 0, right: 30, top: 0, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#f0f0f0" />
-                    <XAxis type="number" hide />
-                    <YAxis 
-                      dataKey="name" 
-                      type="category" 
-                      width={80} 
-                      tick={{fill: '#86868b', fontSize: 11, fontWeight: 500}} 
-                      axisLine={false}
-                      tickLine={false}
-                    />
-                    <Tooltip 
-                      cursor={{fill: '#f5f5f7'}}
-                      contentStyle={{ 
-                        borderRadius: '12px', 
-                        border: 'none', 
-                        boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                        backgroundColor: '#fff',
-                        color: '#1d1d1f',
-                      }}
-                    />
-                    <Bar 
-                      dataKey="followers" 
-                      radius={[0, 4, 4, 0]} 
-                      barSize={16}
-                    >
-                      {chartData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={index === 0 ? '#0071e3' : '#9bbbe3'} />
-                      ))}
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
+        {/* Main Content Area - Full Width */}
+        <div className="space-y-4">
+            <div className="flex items-center justify-between px-1">
+              <h2 className="text-lg font-bold text-apple-text">{getListTitle()}</h2>
+            </div>
+            
+            <LeaderboardTable 
+              users={users} 
+              sortBy={sortBy} 
+              loading={loading} 
+              error={error} 
+              page={page}
+            />
+            
+            {/* Pagination Controls */}
+            {users.length > 0 && (
+              <div className="flex justify-between items-center bg-white p-4 rounded-2xl shadow-soft border border-gray-100">
+                  <div className="text-sm text-gray-500 font-medium">
+                     Page {page}
+                  </div>
+                  <div className="flex gap-2">
+                     <button
+                        onClick={() => setPage(p => Math.max(1, p - 1))}
+                        disabled={page === 1 || loading}
+                        className="p-2 rounded-lg border border-gray-200 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-gray-600"
+                     >
+                        <ChevronLeft size={20} />
+                     </button>
+                     <button
+                        onClick={() => setPage(p => p + 1)}
+                        // Disable if we have fewer items than page size, implying end of list
+                        disabled={users.length < 25 || loading}
+                        className="p-2 rounded-lg border border-gray-200 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-gray-600"
+                     >
+                        <ChevronRight size={20} />
+                     </button>
+                  </div>
+              </div>
+            )}
+            
+            {/* Self-check prompt */}
+            <div className="bg-blue-50 rounded-2xl p-6 flex items-center justify-between border border-blue-100">
+              <div>
+                <h4 className="font-semibold text-apple-blue mb-1">Are you a developer in {location}?</h4>
+                <p className="text-sm text-blue-800/70 max-w-sm">
+                  If you don't see yourself here, try searching for your username directly in the top bar to verify your stats.
+                </p>
+              </div>
+              <div className="hidden sm:block p-3 bg-white rounded-full text-apple-blue shadow-sm">
+                  <ArrowRight size={20} />
               </div>
             </div>
-
-            <div className="bg-gradient-to-br from-gray-900 to-black rounded-3xl p-8 text-white relative overflow-hidden shadow-xl">
-               <div className="absolute top-0 right-0 p-8 opacity-10">
-                 <Cpu size={100} />
-               </div>
-               <h3 className="text-sm font-semibold text-white mb-2 relative z-10">Ranking Algorithm</h3>
-               <p className="text-gray-400 text-xs leading-relaxed relative z-10 mb-6">
-                 We analyze public data points including follower count, repository volume, and contribution history to determine developer influence scores.
-               </p>
-               <div className="inline-flex items-center gap-2 text-[10px] font-bold tracking-wide uppercase text-white bg-white/20 backdrop-blur-md px-3 py-1.5 rounded-full">
-                  <Activity size={12} />
-                  <span>Version 2.1</span>
-               </div>
-            </div>
-          </div>
         </div>
 
         <UserModal 
