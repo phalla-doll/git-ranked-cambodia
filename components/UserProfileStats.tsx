@@ -1,5 +1,5 @@
 import React from 'react';
-import { Users, BookOpen, Activity, UserPlus } from 'lucide-react';
+import { Users, BookOpen, GitCommit, UserPlus } from 'lucide-react';
 import { GitHubUserDetail, SortOption } from '../types';
 
 interface UserProfileStatsProps {
@@ -50,9 +50,9 @@ export const UserProfileStats: React.FC<UserProfileStatsProps> = ({ user, sortBy
         icon={UserPlus}
       />
       <StatBox 
-        label="Activity" 
+        label="Commits" 
         value={user.recent_activity_count !== undefined ? user.recent_activity_count : '-'} 
-        icon={Activity}
+        icon={GitCommit}
         highlight={sortBy === SortOption.CONTRIBUTIONS} 
       />
     </div>

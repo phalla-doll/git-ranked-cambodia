@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, MapPin, Link as LinkIcon, Building, Github, Activity, Terminal } from 'lucide-react';
+import { X, MapPin, Link as LinkIcon, Building, Github, GitCommit, Terminal } from 'lucide-react';
 import { GitHubUserDetail } from '../types';
 
 interface UserModalProps {
@@ -85,7 +85,7 @@ export const UserModal: React.FC<UserModalProps> = ({ user, isOpen, onClose }) =
               <div className="text-lg font-semibold text-neon-400">
                   {user.recent_activity_count !== undefined ? user.recent_activity_count : '-'}
               </div>
-              <div className="text-[9px] text-dark-text uppercase font-medium mt-1">Activity</div>
+              <div className="text-[9px] text-dark-text uppercase font-medium mt-1">Recent Commits</div>
             </div>
           </div>
 

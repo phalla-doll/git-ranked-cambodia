@@ -20,7 +20,7 @@ const BASE_MOCK_USERS: GitHubUserDetail[] = [
     followers: 1205,
     following: 110,
     created_at: "2018-01-15T10:20:30Z",
-    recent_activity_count: 156
+    recent_activity_count: 342
   },
   {
     login: "sopheak-dev",
@@ -38,7 +38,7 @@ const BASE_MOCK_USERS: GitHubUserDetail[] = [
     followers: 890,
     following: 45,
     created_at: "2019-05-10T08:00:00Z",
-    recent_activity_count: 89
+    recent_activity_count: 156
   },
   {
     login: "vireak-codes",
@@ -56,7 +56,7 @@ const BASE_MOCK_USERS: GitHubUserDetail[] = [
     followers: 650,
     following: 300,
     created_at: "2020-03-22T14:15:00Z",
-    recent_activity_count: 245
+    recent_activity_count: 420
   },
   {
     login: "dara-js",
@@ -74,7 +74,7 @@ const BASE_MOCK_USERS: GitHubUserDetail[] = [
     followers: 430,
     following: 12,
     created_at: "2016-11-02T09:30:00Z",
-    recent_activity_count: 12
+    recent_activity_count: 45
   },
   {
     login: "bopha-design",
@@ -92,7 +92,7 @@ const BASE_MOCK_USERS: GitHubUserDetail[] = [
     followers: 340,
     following: 80,
     created_at: "2021-01-05T11:00:00Z",
-    recent_activity_count: 34
+    recent_activity_count: 12
   }
 ];
 
@@ -116,7 +116,7 @@ const generateMockUsers = (count: number): GitHubUserDetail[] => {
         name: randomName,
         followers: Math.floor(template.followers * (0.1 + Math.random() * 0.8)),
         public_repos: Math.floor(template.public_repos * (0.2 + Math.random() * 1.5)),
-        recent_activity_count: Math.floor((template.recent_activity_count || 0) * (0.2 + Math.random() * 1.5)),
+        recent_activity_count: Math.floor((template.recent_activity_count || 0) * (0.2 + Math.random() * 2.5)),
         company: companies[Math.floor(Math.random() * companies.length)],
         location: locations[Math.floor(Math.random() * locations.length)],
         avatar_url: `https://picsum.photos/200/200?random=${i + 10}`,
@@ -129,6 +129,17 @@ const generateMockUsers = (count: number): GitHubUserDetail[] => {
 };
 
 const MOCK_USERS_CAMBODIA = generateMockUsers(50);
+
+const calculateCommitsFromEvents = (events: any[]): number => {
+    if (!Array.isArray(events)) return 0;
+    return events.reduce((acc, event) => {
+        // Only count PushEvents
+        if (event.type === 'PushEvent' && event.payload?.size) {
+            return acc + (Number(event.payload.size) || 0);
+        }
+        return acc;
+    }, 0);
+};
 
 export const getUserByName = async (username: string, apiKey?: string): Promise<GitHubUserDetail | null> => {
   const headers: HeadersInit = {
@@ -146,10 +157,10 @@ export const getUserByName = async (username: string, apiKey?: string): Promise<
     
     // Also fetch activity for single user
     try {
-       const eventsRes = await fetch(`${BASE_URL}/users/${username}/events?per_page=30`, { headers });
+       const eventsRes = await fetch(`${BASE_URL}/users/${username}/events?per_page=100`, { headers });
        if (eventsRes.ok) {
           const events = await eventsRes.json();
-          user.recent_activity_count = Array.isArray(events) ? events.length : 0;
+          user.recent_activity_count = calculateCommitsFromEvents(events);
        }
     } catch (e) {
        // Ignore event fetch error
@@ -242,12 +253,12 @@ export const searchUsersInLocation = async (
             const userDetail = await detailRes.json() as GitHubUserDetail;
 
             // 2. Fetch Recent Events (Activity Proxy)
-            // Limit to 30 to save bandwidth, we just want a "pulse" count
+            // Limit to 100 to get a good sample size of recent history
             try {
                 const eventsRes = await fetch(`${BASE_URL}/users/${item.login}/events?per_page=100`, { headers });
                 if (eventsRes.ok) {
                     const events = await eventsRes.json();
-                    userDetail.recent_activity_count = Array.isArray(events) ? events.length : 0;
+                    userDetail.recent_activity_count = calculateCommitsFromEvents(events);
                 } else {
                     userDetail.recent_activity_count = 0;
                 }

@@ -22,7 +22,7 @@ export interface GitHubUserDetail {
   followers: number;
   following: number;
   created_at: string;
-  recent_activity_count?: number; // Estimated from public events
+  recent_activity_count?: number; // Total commits from recent public PushEvents
 }
 
 export interface SearchResponse {
