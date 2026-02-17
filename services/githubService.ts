@@ -303,11 +303,18 @@ export const searchUsersInLocation = async (
   
   try {
     const q = `location:${location} type:user`;
-    const apiSort = sort === SortOption.CONTRIBUTIONS ? 'repositories' : sort;
     
-    // 1. Get the list of users via REST Search (Best for finding by location)
-    // Reduce to 25 items per page
-    const searchUrl = `${BASE_URL}/search/users?q=${encodeURIComponent(q)}&sort=${apiSort}&order=desc&per_page=25&page=${page}`;
+    // FIX: Using 'repositories' to find top contributors excludes users with high contributions but fewer repos.
+    // 'followers' is a much better proxy for active/popular developers.
+    const apiSort = sort === SortOption.CONTRIBUTIONS ? 'followers' : sort;
+    
+    // FIX: To find top contributors who might not be in the top 25 by followers, 
+    // we fetch a larger pool (100) if a key is present, then sort locally.
+    // Without a key, we limit to 30 to avoid hitting the 60 req/hr limit during hydration.
+    const fetchSize = (sort === SortOption.CONTRIBUTIONS && apiKey) ? 100 : 30;
+    
+    // 1. Get the list of users via REST Search
+    const searchUrl = `${BASE_URL}/search/users?q=${encodeURIComponent(q)}&sort=${apiSort}&order=desc&per_page=${fetchSize}&page=${page}`;
     
     const searchRes = await fetch(searchUrl, { headers });
 
@@ -353,6 +360,7 @@ export const searchUsersInLocation = async (
          const usersMap = await fetchGraphQLUserDetails(usernames, apiKey);
          
          // IMPORTANT: Map back to the original `usernames` array to maintain the sort order from the Search API
+         // unless we are re-sorting later
          detailedUsers = usernames
             .map(login => usersMap[login.toLowerCase()] || null)
             .filter((u): u is GitHubUserDetail => u !== null);
@@ -364,17 +372,11 @@ export const searchUsersInLocation = async (
     
     if (detailedUsers.length === 0) {
        // STRATEGY B: Fallback via REST (No Token or GraphQL failed)
-       // Fetches details one by one.
-       // NOTE: We do NOT fetch events here for the full list to avoid instant rate limiting.
         const detailPromises = searchData.items.map(async (item: GitHubUserSummary) => {
             try {
                 const detailRes = await fetch(`${BASE_URL}/users/${item.login}`, { headers });
                 if (!detailRes.ok) return null;
                 const userDetail = await detailRes.json() as GitHubUserDetail;
-
-                // In list view without token, we cannot afford 50 event calls.
-                // Leave recent_activity_count undefined so UI shows '-' instead of 0.
-                // This is more honest than showing 0 when we didn't check.
                 return userDetail;
             } catch (e) {
                 return null;
@@ -393,8 +395,12 @@ export const searchUsersInLocation = async (
         detailedUsers.sort((a, b) => (b.recent_activity_count || 0) - (a.recent_activity_count || 0));
     }
 
+    // Slice to standard page size (25) to ensure UI pagination logic remains consistent
+    // even if we fetched a larger pool for accuracy.
+    const finalUsers = detailedUsers.slice(0, 25);
+
     return {
-        users: detailedUsers,
+        users: finalUsers,
         total_count: searchData.total_count,
         rateLimited: false
     };
