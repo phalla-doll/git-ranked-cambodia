@@ -1,5 +1,5 @@
 import React from 'react';
-import { Users, BookOpen, GitCommit, UserPlus, Calendar } from 'lucide-react';
+import { Users, BookOpen, UserPlus, Calendar } from 'lucide-react';
 import { GitHubUserDetail, SortOption } from '../types';
 
 interface UserProfileStatsProps {
@@ -20,14 +20,18 @@ const StatBox = ({
   icon?: React.ElementType, 
   highlight?: boolean 
 }) => (
-  <div className={`flex flex-col items-center justify-center p-2 sm:p-3 h-full transition-colors relative group/stat ${highlight ? 'bg-neon-500/5' : 'bg-transparent hover:bg-dark-bg/50'}`}>
+  <div className={`flex flex-col items-center justify-center py-3 px-1 sm:py-4 sm:px-2 h-full transition-colors relative group/stat ${highlight ? 'bg-neon-500/5' : 'bg-transparent hover:bg-dark-bg/50'}`}>
     {highlight && <div className="absolute inset-x-0 top-0 h-0.5 bg-neon-500 shadow-[0_0_8px_rgba(46,255,163,0.5)]"></div>}
-    <span className={`text-sm sm:text-base font-semibold ${highlight ? 'text-neon-400' : 'text-white'}`}>
+    
+    <span className={`text-sm sm:text-base font-semibold leading-none ${highlight ? 'text-neon-400' : 'text-white'}`}>
       {typeof value === 'number' ? value.toLocaleString() : value}
     </span>
-    <div className="flex items-center gap-1.5 mt-1.5">
-      {Icon && <Icon size={10} className={`opacity-70 ${highlight ? 'text-neon-400' : 'text-dark-text'}`} />}
-      <span className={`text-[9px] sm:text-[10px] uppercase font-medium tracking-wide ${highlight ? 'text-neon-400/80' : 'text-dark-text/70'}`}>{label}</span>
+    
+    <div className="flex items-center gap-1.5 mt-2">
+      {Icon && <Icon size={11} className={`opacity-70 ${highlight ? 'text-neon-400' : 'text-dark-text'}`} />}
+      <span className={`text-[9px] sm:text-[10px] uppercase font-medium tracking-wide ${highlight ? 'text-neon-400/80' : 'text-dark-text/70'}`}>
+        {label}
+      </span>
     </div>
   </div>
 );
