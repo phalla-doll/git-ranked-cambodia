@@ -15,13 +15,13 @@ const RankBadge = ({ rank }: { rank: number }) => {
   let icon = null;
 
   if (rank === 1) {
-    colorClass = "text-yellow-600 font-bold scale-110";
+    colorClass = "text-yellow-600 font-medium scale-110";
     icon = <Trophy size={16} className="text-yellow-500 fill-yellow-500/20" />;
   } else if (rank === 2) {
-    colorClass = "text-gray-600 font-bold scale-105";
+    colorClass = "text-gray-600 font-medium scale-105";
     icon = <Medal size={16} className="text-gray-400 fill-gray-400/20" />;
   } else if (rank === 3) {
-    colorClass = "text-orange-700 font-bold scale-105";
+    colorClass = "text-orange-700 font-medium scale-105";
     icon = <Medal size={16} className="text-orange-500 fill-orange-500/20" />;
   }
 
@@ -56,7 +56,7 @@ export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({ users, sortB
         <div className="w-12 h-12 bg-red-50 rounded-full flex items-center justify-center mb-4">
             <AlertTriangle className="text-red-500" size={20} />
         </div>
-        <h3 className="text-apple-text font-semibold text-lg">Connection Issue</h3>
+        <h3 className="text-apple-text font-medium text-lg">Connection Issue</h3>
         <p className="text-apple-gray text-sm text-center max-w-xs mt-2">{error}</p>
       </div>
     );
@@ -85,7 +85,7 @@ export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({ users, sortB
       <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="bg-gray-50/50 border-b border-gray-200/60 text-xs font-semibold tracking-wide text-gray-500 uppercase">
+            <tr className="bg-gray-50/50 border-b border-gray-200/60 text-xs font-medium tracking-wide text-gray-500 uppercase">
               <th className="px-6 py-4 w-20 text-center">Rank</th>
               <th className="px-6 py-4">Developer</th>
               <th className="px-6 py-4 text-right w-32 hidden sm:table-cell">Followers</th>
@@ -146,7 +146,7 @@ export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({ users, sortB
 
                   <td className="px-6 py-4 text-right hidden sm:table-cell">
                     <div className="flex flex-col items-end">
-                      <span className={`font-semibold ${sortBy === SortOption.FOLLOWERS ? 'text-apple-blue' : 'text-gray-700'}`}>
+                      <span className={`font-medium ${sortBy === SortOption.FOLLOWERS ? 'text-apple-blue' : 'text-gray-700'}`}>
                         {user.followers.toLocaleString()}
                       </span>
                     </div>
@@ -154,7 +154,7 @@ export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({ users, sortB
 
                   <td className="px-6 py-4 text-right hidden md:table-cell">
                     <div className="flex flex-col items-end">
-                      <span className={`font-semibold ${sortBy === SortOption.REPOS ? 'text-apple-blue' : 'text-gray-700'}`}>
+                      <span className={`font-medium ${sortBy === SortOption.REPOS ? 'text-apple-blue' : 'text-gray-700'}`}>
                         {user.public_repos.toLocaleString()}
                       </span>
                     </div>
@@ -162,7 +162,7 @@ export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({ users, sortB
 
                   <td className="px-6 py-4 text-right hidden lg:table-cell">
                     <div className="flex flex-col items-end">
-                      <span className={`font-semibold ${sortBy === SortOption.CONTRIBUTIONS ? 'text-apple-blue' : 'text-gray-700'}`}>
+                      <span className={`font-medium ${sortBy === SortOption.CONTRIBUTIONS ? 'text-apple-blue' : 'text-gray-700'}`}>
                          {user.recent_activity_count !== undefined ? user.recent_activity_count.toLocaleString() : '-'}
                       </span>
                     </div>

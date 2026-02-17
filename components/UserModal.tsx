@@ -48,38 +48,38 @@ export const UserModal: React.FC<UserModalProps> = ({ user, isOpen, onClose }) =
           </div>
 
           <div className="mb-4">
-            <h2 className="text-2xl font-bold text-apple-text tracking-tight">{user.name || user.login}</h2>
+            <h2 className="text-2xl font-medium text-apple-text tracking-tight">{user.name || user.login}</h2>
             <p className="text-apple-gray text-sm">@{user.login}</p>
           </div>
 
           {user.bio && (
-            <p className="text-gray-600 mb-6 text-sm leading-relaxed">
+            <p className="text-gray-600 mb-6 text-sm leading-relaxed font-normal">
               {user.bio}
             </p>
           )}
 
           <div className="grid grid-cols-4 gap-2 mb-8 bg-gray-50 rounded-xl p-4">
             <div className="text-center">
-              <div className="text-lg font-bold text-apple-text">{user.public_repos}</div>
-              <div className="text-[10px] text-gray-400 uppercase font-semibold mt-1">Repos</div>
+              <div className="text-lg font-medium text-apple-text">{user.public_repos}</div>
+              <div className="text-[10px] text-gray-400 uppercase font-medium mt-1">Repos</div>
             </div>
             <div className="text-center border-l border-gray-200">
-              <div className="text-lg font-bold text-apple-text">{user.followers}</div>
-              <div className="text-[10px] text-gray-400 uppercase font-semibold mt-1">Followers</div>
+              <div className="text-lg font-medium text-apple-text">{user.followers}</div>
+              <div className="text-[10px] text-gray-400 uppercase font-medium mt-1">Followers</div>
             </div>
             <div className="text-center border-l border-gray-200">
-              <div className="text-lg font-bold text-apple-text">{user.following}</div>
-              <div className="text-[10px] text-gray-400 uppercase font-semibold mt-1">Following</div>
+              <div className="text-lg font-medium text-apple-text">{user.following}</div>
+              <div className="text-[10px] text-gray-400 uppercase font-medium mt-1">Following</div>
             </div>
             <div className="text-center border-l border-gray-200">
-              <div className="text-lg font-bold text-apple-blue">
+              <div className="text-lg font-medium text-apple-blue">
                   {user.recent_activity_count !== undefined ? user.recent_activity_count : '-'}
               </div>
-              <div className="text-[10px] text-gray-400 uppercase font-semibold mt-1">Contribs</div>
+              <div className="text-[10px] text-gray-400 uppercase font-medium mt-1">Contribs</div>
             </div>
           </div>
 
-          <div className="space-y-3 text-sm text-gray-600">
+          <div className="space-y-3 text-sm text-gray-600 font-normal">
             {user.location && (
               <div className="flex items-center gap-3">
                 <MapPin size={16} className="text-gray-400" />

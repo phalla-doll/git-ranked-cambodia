@@ -210,7 +210,7 @@ function App() {
               </div>
               <button 
                 onClick={() => setShowKeyInput(true)}
-                className="text-[10px] font-semibold text-orange-700 bg-white border border-orange-200 px-3 py-1 rounded-full hover:bg-orange-50 transition-colors"
+                className="text-[10px] font-medium text-orange-700 bg-white border border-orange-200 px-3 py-1 rounded-full hover:bg-orange-50 transition-colors"
               >
                 Add Key
               </button>
@@ -227,7 +227,7 @@ function App() {
                   <Terminal className="text-white h-5 w-5" />
                </div>
                <div className="flex flex-col">
-                  <span className="font-bold text-lg text-apple-text leading-none tracking-tight">
+                  <span className="font-medium text-lg text-apple-text leading-none tracking-tight">
                     GitRanked
                   </span>
                </div>
@@ -270,7 +270,7 @@ function App() {
         <div className="absolute top-16 right-0 left-0 z-30 bg-white/90 border-b border-gray-200 backdrop-blur-xl animate-in slide-in-from-top-2 shadow-lg">
            <div className="max-w-7xl mx-auto p-6 flex flex-col md:flex-row items-center gap-4 justify-between">
              <div className="text-sm text-apple-text">
-               <p className="font-semibold mb-1">GitHub Access Token</p>
+               <p className="font-medium mb-1">GitHub Access Token</p>
                <p className="text-gray-500">Add a token to increase API rate limits.</p>
              </div>
              <div className="flex w-full md:w-auto gap-2">
@@ -294,10 +294,10 @@ function App() {
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
         
-        {/* Controls Section */}
+        {/* Controls Section - Search Only */}
         <div className="flex flex-col md:flex-row gap-8 justify-between items-end">
           <div className="w-full md:max-w-lg">
-             <h1 className="text-3xl font-bold tracking-tight mb-6">Developer Rankings</h1>
+             <h1 className="text-3xl font-medium tracking-tight mb-6">Developer Rankings</h1>
              <form onSubmit={handleSearch} className="relative group" ref={inputWrapperRef}>
                 <div className="relative shadow-soft rounded-2xl">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -340,28 +340,6 @@ function App() {
                 )}
              </form>
           </div>
-
-          {/* Pill Tabs */}
-          <div className="flex overflow-x-auto custom-scrollbar bg-white/60 backdrop-blur-xl p-1.5 rounded-full border border-gray-200/50 shadow-soft w-full md:w-auto">
-             {[
-               { id: SortOption.FOLLOWERS, label: 'Followers' },
-               { id: SortOption.CONTRIBUTIONS, label: 'Contributions' },
-               { id: SortOption.REPOS, label: 'Repositories' },
-               { id: SortOption.JOINED, label: 'Newest' }
-             ].map((option) => (
-                <button
-                  key={option.id}
-                  onClick={() => setSortBy(option.id)}
-                  className={`flex-1 md:flex-none px-4 sm:px-6 py-2 text-xs sm:text-sm font-medium rounded-full transition-all duration-300 ease-out whitespace-nowrap ${
-                    sortBy === option.id 
-                      ? 'bg-white text-apple-text shadow-[0_2px_8px_rgba(0,0,0,0.08)] ring-1 ring-black/5 font-semibold scale-100' 
-                      : 'text-gray-500 hover:text-gray-800 hover:bg-gray-100/50 scale-95'
-                  }`}
-                >
-                  {option.label}
-                </button>
-             ))}
-          </div>
         </div>
 
         {/* Stats Grid */}
@@ -386,8 +364,30 @@ function App() {
 
         {/* Main Content Area - Full Width */}
         <div className="space-y-4">
-            <div className="flex items-center justify-between px-1">
-              <h2 className="text-lg font-bold text-apple-text">{getListTitle()}</h2>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between px-1 gap-4">
+              <h2 className="text-lg font-medium text-apple-text">{getListTitle()}</h2>
+              
+              {/* Pill Tabs Moved Here */}
+              <div className="flex overflow-x-auto custom-scrollbar bg-white/60 backdrop-blur-xl p-1 rounded-lg border border-gray-200/50 shadow-sm w-full sm:w-auto">
+                 {[
+                   { id: SortOption.FOLLOWERS, label: 'Followers' },
+                   { id: SortOption.CONTRIBUTIONS, label: 'Contributions' },
+                   { id: SortOption.REPOS, label: 'Repositories' },
+                   { id: SortOption.JOINED, label: 'Newest' }
+                 ].map((option) => (
+                    <button
+                      key={option.id}
+                      onClick={() => setSortBy(option.id)}
+                      className={`flex-1 md:flex-none px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-200 ease-out whitespace-nowrap ${
+                        sortBy === option.id 
+                          ? 'bg-white text-apple-text shadow-sm ring-1 ring-black/5' 
+                          : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100/50'
+                      }`}
+                    >
+                      {option.label}
+                    </button>
+                 ))}
+              </div>
             </div>
             
             <LeaderboardTable 
@@ -427,7 +427,7 @@ function App() {
             {/* Self-check prompt */}
             <div className="bg-blue-50 rounded-2xl p-6 flex items-center justify-between border border-blue-100">
               <div>
-                <h4 className="font-semibold text-apple-blue mb-1">Are you a developer in {location}?</h4>
+                <h4 className="font-medium text-apple-blue mb-1">Are you a developer in {location}?</h4>
                 <p className="text-sm text-blue-800/70 max-w-sm">
                   If you don't see yourself here, try searching for your username directly in the top bar to verify your stats.
                 </p>
